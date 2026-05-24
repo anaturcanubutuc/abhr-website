@@ -645,7 +645,7 @@ function AdminPage({ members, setMembers, news, setNews, events, setEvents, albu
 
   const tabs = [
     {key:"members",label:t.tabs.members},{key:"news",label:t.tabs.news},{key:"events",label:t.tabs.events},
-    {key:"gallery",label:t.tabs.gallery},{key:"research",label:t.tabs.research},{key:"education",label:t.tabs.education},{key:"certificates",label:t.tabs.certificates}
+    {key:"gallery",label:t.tabs.gallery},{key:"research",label:t.tabs.research},{key:"education",label:t.tabs.education}
   ];
 
   const openAdd = () => { setEditItem(null); setForm({}); setShowForm(true); };
