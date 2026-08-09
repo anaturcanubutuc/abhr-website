@@ -1572,38 +1572,6 @@ export default function App() {
   const [selectedEvent,setSelectedEvent] = useState(null);
   const [selectedArticle,setSelectedArticle] = useState(null);
 
-  // SEO: update page title and meta description on page change
-  useEffect(()=>{
-    const titles = {
-      home: lang==="ro"?"Acasă — ABHR":"Home — ABHR",
-      about: lang==="ro"?"Despre Noi — ABHR":"About Us — ABHR",
-      news: lang==="ro"?"Știri — ABHR":"News — ABHR",
-      events: lang==="ro"?"Evenimente — ABHR":"Events — ABHR",
-      gallery: lang==="ro"?"Galerie — ABHR":"Gallery — ABHR",
-      research: lang==="ro"?"Cercetare — ABHR":"Research — ABHR",
-      education: lang==="ro"?"Educație — ABHR":"Education — ABHR",
-      contact: "Contact — ABHR",
-      profile: lang==="ro"?"Profilul Meu — ABHR":"My Profile — ABHR",
-      login: lang==="ro"?"Autentificare — ABHR":"Login — ABHR",
-      admin: "Admin — ABHR",
-    };
-    const descs = {
-      home: lang==="ro"?"Alianța pentru Boli Hepatice Rare susține pacienții din Republica Moldova.":"The Alliance for Rare Hepatic Diseases supports patients in the Republic of Moldova.",
-      contact: lang==="ro"?"Contactați Alianța pentru Boli Hepatice Rare.":"Contact the Alliance for Rare Hepatic Diseases.",
-    };
-    document.title = titles[cp] || "ABHR — Alianța pentru Boli Hepatice Rare";
-    let metaDesc = document.querySelector("meta[name='description']");
-    if(!metaDesc){ metaDesc=document.createElement("meta"); metaDesc.name="description"; document.head.appendChild(metaDesc); }
-    metaDesc.content = descs[cp] || (lang==="ro"?"Alianța pentru Boli Hepatice Rare din Republica Moldova.":"Alliance for Rare Hepatic Diseases from the Republic of Moldova.");
-    // Open Graph tags
-    const ogTags = { "og:title": document.title, "og:description": metaDesc.content, "og:type":"website", "og:url": window.location.href };
-    Object.entries(ogTags).forEach(([prop,val])=>{
-      let tag = document.querySelector(`meta[property='${prop}']`);
-      if(!tag){ tag=document.createElement("meta"); tag.setAttribute("property",prop); document.head.appendChild(tag); }
-      tag.content = val;
-    });
-  },[cp,lang]);
-
   useEffect(()=>{
     const load=async()=>{
       setLoading(true);
@@ -1635,6 +1603,37 @@ export default function App() {
 
   // Scroll to top on every page change
   useEffect(()=>{ window.scrollTo({top:0,behavior:"instant"}); },[cp]);
+
+  // SEO: update page title and meta description on page change
+  useEffect(()=>{
+    const titles = {
+      home: lang==="ro"?"Acasă — ABHR":"Home — ABHR",
+      about: lang==="ro"?"Despre Noi — ABHR":"About Us — ABHR",
+      news: lang==="ro"?"Știri — ABHR":"News — ABHR",
+      events: lang==="ro"?"Evenimente — ABHR":"Events — ABHR",
+      gallery: lang==="ro"?"Galerie — ABHR":"Gallery — ABHR",
+      research: lang==="ro"?"Cercetare — ABHR":"Research — ABHR",
+      education: lang==="ro"?"Educație — ABHR":"Education — ABHR",
+      contact: "Contact — ABHR",
+      profile: lang==="ro"?"Profilul Meu — ABHR":"My Profile — ABHR",
+      login: lang==="ro"?"Autentificare — ABHR":"Login — ABHR",
+      admin: "Admin — ABHR",
+    };
+    const descs = {
+      home: lang==="ro"?"Alianța pentru Boli Hepatice Rare susține pacienții din Republica Moldova.":"The Alliance for Rare Hepatic Diseases supports patients in the Republic of Moldova.",
+      contact: lang==="ro"?"Contactați Alianța pentru Boli Hepatice Rare.":"Contact the Alliance for Rare Hepatic Diseases.",
+    };
+    document.title = titles[cp] || "ABHR — Alianța pentru Boli Hepatice Rare";
+    let metaDesc = document.querySelector("meta[name='description']");
+    if(!metaDesc){ metaDesc=document.createElement("meta"); metaDesc.name="description"; document.head.appendChild(metaDesc); }
+    metaDesc.content = descs[cp] || (lang==="ro"?"Alianța pentru Boli Hepatice Rare din Republica Moldova.":"Alliance for Rare Hepatic Diseases from the Republic of Moldova.");
+    const ogTags = {"og:title":document.title,"og:description":metaDesc.content,"og:type":"website","og:url":window.location.href};
+    Object.entries(ogTags).forEach(([prop,val])=>{
+      let tag=document.querySelector(`meta[property='${prop}']`);
+      if(!tag){tag=document.createElement("meta");tag.setAttribute("property",prop);document.head.appendChild(tag);}
+      tag.content=val;
+    });
+  },[cp,lang]);
 
   const openPanel=()=>setPanelOpen(true);
 
