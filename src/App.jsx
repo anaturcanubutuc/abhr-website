@@ -1,10 +1,19 @@
-import { useState, useEffect, useRef, createContext, useContext } from "react";
+import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 const SUPABASE_URL = "https://bfbrleoqsdnqtbutlcha.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmYnJsZW9xc2RucXRidXRsY2hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzM1NDksImV4cCI6MjA5NTAwOTU0OX0.MKqr1cNZRKB4ANNJbT2QML_Xb2xpK8wmi_5xRYuxE3o";
+// SHA-256 password hashing via Web Crypto API (secure, no library needed)
+async function hashPasswordAsync(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + "abhr-salt-2025"); // salted
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+// Sync fallback for demo data only
 const hashPassword = (p) => btoa(p);
-const ADMIN_CARD = "ADMIN-000", ADMIN_PASS = "admin123";
+const ADMIN_CARD = "12345678", ADMIN_PASS = "abhr123";
 
 const GREEN="#1a6b4a", GREEN_DARK="#0a2540", GREEN_MID="#0d3d45", GREEN_LIGHT="#e8f5ee";
 const GREEN_ACCENT="#2ecc8a", RED="#c0392b", RED_LIGHT="#fdf0ee";
@@ -55,11 +64,92 @@ const db = {
   }
 };
 
+// ─── STORAGE UPLOAD ───────────────────────────────────────────────────────────
+const storage = {
+  async upload(bucket, file) {
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": file.type },
+        body: file,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+    } catch (e) {
+      console.error("Storage upload error:", e);
+      return null;
+    }
+  },
+  async remove(bucket, url) {
+    try {
+      const path = url.split(`/object/public/${bucket}/`)[1];
+      if (!path) return;
+      await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+        method: "DELETE",
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      });
+    } catch (e) { console.error("Storage delete error:", e); }
+  }
+};
+
+// ─── FILE UPLOAD FIELD COMPONENT ──────────────────────────────────────────────
+function FileUploadField({ label, value, onChange, accept, bucket, optional }) {
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(value || "");
+  const inputRef = useRef(null);
+
+  const handleFile = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await storage.upload(bucket, file);
+    setUploading(false);
+    if (url) { setPreview(url); onChange(url); }
+    else alert("Upload failed. Please try again.");
+  };
+
+  const handleClear = () => { setPreview(""); onChange(null); if (inputRef.current) inputRef.current.value = ""; };
+
+  const isImage = accept === "image/*";
+  const isPdf = accept === ".pdf,application/pdf";
+
+  return (
+    <div>
+      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 5 }}>
+        {label} {optional && <span style={{ color: "#aaa", fontWeight: 400 }}>(opțional)</span>}
+      </label>
+      {preview ? (
+        <div style={{ border: "1.5px solid #ddd", borderRadius: 8, padding: 10, background: "white" }}>
+          {isImage && <img src={preview} alt="preview" style={{ width: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 6, marginBottom: 8 }} />}
+          {isPdf && <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}><span style={{ fontSize: 24 }}>📄</span><a href={preview} target="_blank" rel="noreferrer" style={{ color: "#1a6b4a", fontSize: 13, fontWeight: 600 }}>Vezi PDF</a></div>}
+          <div style={{ display: "flex", gap: 8 }}>
+            <button type="button" onClick={() => inputRef.current?.click()} style={{ background: "#f0f0f0", border: "1px solid #ccc", color: "#333", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}>Înlocuiește</button>
+            <button type="button" onClick={handleClear} style={{ background: "#fdf0ee", border: "1px solid #c0392b", color: "#c0392b", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}>Șterge</button>
+          </div>
+        </div>
+      ) : (
+        <div onClick={() => !uploading && inputRef.current?.click()} style={{ border: "1.5px dashed #ccc", borderRadius: 8, padding: "20px 14px", background: "#fafafa", cursor: uploading ? "wait" : "pointer", textAlign: "center", transition: "border 0.2s" }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = "#1a6b4a"}
+          onMouseLeave={e => e.currentTarget.style.borderColor = "#ccc"}
+        >
+          {uploading
+            ? <div style={{ color: "#888", fontSize: 13 }}>⏳ Se încarcă...</div>
+            : <div><div style={{ fontSize: 24, marginBottom: 4 }}>{isImage ? "🖼" : "📄"}</div><div style={{ fontSize: 13, color: "#888" }}>Click pentru a încărca {isImage ? "imagine" : "PDF"}</div><div style={{ fontSize: 11, color: "#bbb", marginTop: 4 }}>{isImage ? "JPG, PNG, WEBP" : "PDF"}</div></div>
+          }
+        </div>
+      )}
+      <input ref={inputRef} type="file" accept={accept} onChange={handleFile} style={{ display: "none" }} />
+    </div>
+  );
+}
+
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
 const T = {
   ro:{
     orgName:"Alianța pentru Boli Hepatice Rare",
-    nav:{home:"Acasă",about:"Despre Noi",activitati:"Activități",events:"Evenimente",gallery:"Galerie",resurse:"Resurse",news:"Știri",research:"Cercetare",education:"Educație",profile:"Profilul Meu",login:"Autentificare",logout:"Deconectare",admin:"Admin",member:"Devino Membru"},
+    nav:{home:"Acasă",about:"Despre Noi",activitati:"Activități",events:"Evenimente",gallery:"Galerie",resurse:"Resurse",news:"Știri",research:"Cercetare",education:"Educație",contact:"Contact",profile:"Profilul Meu",login:"Autentificare",logout:"Deconectare",admin:"Admin",member:"Devino Membru"},
     home:{hero:"Împreună pentru sănătate hepatică",sub:"Susținem pacienții și familiile afectate de boli hepatice rare din Republica Moldova prin educație, cercetare și comunitate.",cta:"Despre Noi",member:"Devino Membru",recentNews:"Ultimele Știri",newsSubtitle:"Rămâneți la curent cu noutățile ABHR",allNews:"Toate Știrile ↗",upcomingEvents:"Evenimente",eventsSubtitle:"Evenimente și activități ABHR",allEvents:"Toate Evenimentele ↗"},
     news:{title:"Știri",subtitle:"Noutăți și anunțuri de la ABHR",noNews:"Nu există știri disponibile.",readMore:"Citește mai mult ↗",back:"← Înapoi la Știri"},
     events:{title:"Evenimente",subtitle:"Evenimente și activități organizate de ABHR",noEvents:"Nu există evenimente.",back:"← Înapoi la Evenimente",ongoing:"În desfășurare",upcoming:"Urmează",past:"Trecut",location:"Locație",agenda:"Agendă (PDF)",speakers:"Vorbitori",gallery:"Galerie Foto",viewGallery:"Vezi galeria ↗",details:"Detalii"},
@@ -81,12 +171,26 @@ const T = {
     stats:[{v:"120+",l:"Membri Activi",i:"👥",t:120},{v:"24",l:"Evenimente Organizate",i:"📅",t:24},{v:"48",l:"Articole Publicate",i:"📰",t:48},{v:"6+",l:"Ani de Activitate",i:"🏆",t:6}],
     about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Advocacy",d:"Reprezentăm interesele pacienților la nivel național."}]},
     footer:"© 2025 Alianța pentru Boli Hepatice Rare. Toate drepturile rezervate.",
+    contact:{
+      title:"Contact",
+      subtitle:"Luați legătura cu noi",
+      email:"Email",
+      phone:"Telefon",
+      social:"Rețele Sociale",
+      emailVal:"contact@abhr.md",
+      phoneVal:"+373 79682161",
+      facebookLabel:"Alianța pentru Boli Hepatice Rare din Moldova",
+      address:"Republica Moldova",
+      writeUs:"Scrieți-ne",
+      writeUsDesc:"Aveti întrebări sau doriți să aflați mai multe despre activitățile noastre? Nu ezitați să ne contactați.",
+      followUs:"Urmăriți-ne",
+    },
     loading:"Se încarcă...",
-    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO)",title_en:"Titlu (EN)",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status",agenda_url:"URL Agendă PDF",speakers_image_url:"URL Imagine Vorbitori",album_id:"ID Album Galerie",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment"}},
+    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment"}},
   },
   en:{
     orgName:"Alliance for Rare Hepatic Diseases",
-    nav:{home:"Home",about:"About Us",activitati:"Activities",events:"Events",gallery:"Gallery",resurse:"Resources",news:"News",research:"Research",education:"Education",profile:"My Profile",login:"Login",logout:"Logout",admin:"Admin",member:"Become a Member"},
+    nav:{home:"Home",about:"About Us",activitati:"Activities",events:"Events",gallery:"Gallery",resurse:"Resources",news:"News",research:"Research",education:"Education",contact:"Contact",profile:"My Profile",login:"Login",logout:"Logout",admin:"Admin",member:"Become a Member"},
     home:{hero:"Together for Hepatic Health",sub:"We support patients and families affected by rare liver diseases in the Republic of Moldova through education, research and community.",cta:"About Us",member:"Become a Member",recentNews:"Latest News",newsSubtitle:"Stay up to date with ABHR news",allNews:"All News ↗",upcomingEvents:"Events",eventsSubtitle:"Events and activities organized by ABHR",allEvents:"All Events ↗"},
     news:{title:"News",subtitle:"News and announcements from ABHR",noNews:"No news available.",readMore:"Read more ↗",back:"← Back to News"},
     events:{title:"Events",subtitle:"Events and activities organized by ABHR",noEvents:"No events available.",back:"← Back to Events",ongoing:"Ongoing",upcoming:"Upcoming",past:"Past",location:"Location",agenda:"Agenda (PDF)",speakers:"Speakers",gallery:"Photo Gallery",viewGallery:"View gallery ↗",details:"Details"},
@@ -108,8 +212,22 @@ const T = {
     stats:[{v:"120+",l:"Active Members",i:"👥",t:120},{v:"24",l:"Events Organized",i:"📅",t:24},{v:"48",l:"Articles Published",i:"📰",t:48},{v:"6+",l:"Years of Activity",i:"🏆",t:6}],
     about:{label:"About Us",title:"Together for hepatic health in Moldova",body:"ABHR is an organization dedicated to supporting patients with rare liver diseases and their families. We are committed to providing information, resources and support to our community.",cta:"Read More ↗",features:[{icon:"🔬",t:"Medical Research",d:"We support research in rare liver diseases in Moldova."},{icon:"🤝",t:"Community Support",d:"We provide emotional and practical support to patients and families."},{icon:"📚",t:"Education & Information",d:"We publish educational resources for patients and professionals."},{icon:"🌍",t:"Advocacy",d:"We represent patient interests at the national level."}]},
     footer:"© 2025 Alliance for Rare Hepatic Diseases. All rights reserved.",
+    contact:{
+      title:"Contact",
+      subtitle:"Get in touch with us",
+      email:"Email",
+      phone:"Phone",
+      social:"Social Media",
+      emailVal:"contact@abhr.md",
+      phoneVal:"+373 79682161",
+      facebookLabel:"Alliance for Rare Hepatic Diseases from Moldova",
+      address:"Republic of Moldova",
+      writeUs:"Write to us",
+      writeUsDesc:"Do you have questions or want to learn more about our activities? Don't hesitate to contact us.",
+      followUs:"Follow us",
+    },
     loading:"Loading...",
-    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO)",title_en:"Title (EN)",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status",agenda_url:"Agenda PDF URL",speakers_image_url:"Speakers Image URL",album_id:"Gallery Album ID",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event"}},
+    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event"}},
   }
 };
 
@@ -209,7 +327,8 @@ function ContentCard({item, onClick, type="news"}) {
           {type==="event"&&<StatusBadge status={item.status}/>}
         </div>
         <h3 style={{fontFamily:"Georgia,serif",fontSize:19,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3}}>{title}</h3>
-        {body&&<p style={{color:"#666",fontSize:14,lineHeight:1.7,margin:"0 0 20px"}}>{body.slice(0,120)}{body.length>120?"…":""}</p>}
+        {body&&<p style={{color:"#666",fontSize:14,lineHeight:1.7,margin:"0 0 20px"}}>{body.replace(/
+/g," ").slice(0,120)}{body.length>120?"…":""}</p>}
         {type==="event"&&item.location_ro&&<div style={{fontSize:13,color:"#888",marginBottom:16}}>📍 {lang==="ro"?item.location_ro:item.location_en}</div>}
         <span style={{color:GREEN,fontSize:13,fontWeight:700}}>{type==="event"?t.events.details+" ↗":t.news.readMore}</span>
       </div>
@@ -319,7 +438,7 @@ function Navbar({page,setPage,onMemberClick}) {
     return()=>window.removeEventListener("scroll",fn);
   },[]);
   // Force scrolled=true on pages without dark hero
-  const noHeroPages=["admin","profile","newsDetail","eventDetail","researchDetail","educationDetail"];
+  const noHeroPages=["admin","profile","newsDetail","eventDetail","researchDetail","educationDetail","contact"];
   const effectiveScrolled = scrolled || noHeroPages.includes(page);
   const go=(key)=>{setPage(key);setMenuOpen(false);setDropdown(null);};
   const btnColor = effectiveScrolled?"#333":"white";
@@ -329,6 +448,7 @@ function Navbar({page,setPage,onMemberClick}) {
     {label:t.about,key:"about"},
     {label:t.activitati+" ▾",key:"activitati",children:[{label:t.events,key:"events"},{label:t.gallery,key:"gallery"}]},
     {label:t.resurse+" ▾",key:"resurse",children:[{label:t.news,key:"news"},{label:t.research,key:"research"},{label:t.education,key:"education"}]},
+    {label:t.contact,key:"contact"},
     ...(user&&!user.isAdmin?[{label:t.profile,key:"profile"}]:[]),
     ...(user?.isAdmin?[{label:t.admin,key:"admin"}]:[]),
   ];
@@ -406,6 +526,7 @@ function Footer({setPage}) {
           {[
             {title:t.nav.activitati,links:[{l:t.nav.events,k:"events"},{l:t.nav.gallery,k:"gallery"}]},
             {title:t.nav.resurse,links:[{l:t.nav.news,k:"news"},{l:t.nav.research,k:"research"},{l:t.nav.education,k:"education"}]},
+            {title:t.nav.contact,links:[{l:t.contact.emailVal,k:"contact"},{l:t.contact.phoneVal,k:null},{l:"Facebook",k:null}]},
             {title:"Contact",links:[{l:"contact@abhr.md",k:null},{l:"Chișinău, Moldova",k:null},{l:"Facebook ABHR",k:null}]},
           ].map(col=>(
             <div key={col.title}>
@@ -771,7 +892,7 @@ function EventDetailPage({item,setPage,albums}) {
       </div>
       <div style={{background:"#f8f9fa",padding:"60px 32px"}}>
         <div style={{maxWidth:900,margin:"0 auto",display:"flex",flexDirection:"column",gap:24}}>
-          {desc&&<div style={{background:"white",borderRadius:16,padding:36,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}><p style={{fontSize:16,lineHeight:1.9,color:"#333",margin:0}}>{desc}</p></div>}
+          {desc&&<div style={{background:"white",borderRadius:16,padding:36,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}><p style={{fontSize:16,lineHeight:1.9,color:"#333",margin:0,whiteSpace:"pre-wrap"}}>{desc}</p></div>}
           {item.agenda_url&&(
             <div style={{background:"white",borderRadius:16,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
               <div style={{display:"flex",alignItems:"center",gap:14}}><span style={{fontSize:32}}>📄</span><div><div style={{fontWeight:700,color:"#1a1a1a"}}>{t.agenda}</div></div></div>
@@ -1081,16 +1202,44 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   };
 
   const buildPayload=()=>{
-    if(tab==="members")return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash:form.password?hashPassword(form.password):form.password_hash};
-    if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||"",date:form.date||new Date().toISOString().slice(0,10)};
-    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",agenda_url:form.agenda_url||"",speakers_image_url:form.speakers_image_url||"",album_id:form.album_id||""};
+    if(tab==="members"){
+      let password_hash = form.password_hash;
+      if(form.password) {
+        // We'll hash async before save - store temporarily
+        password_hash = "__PENDING__" + form.password;
+      }
+      return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash};
+    }
+    if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||null,date:form.date||new Date().toISOString().slice(0,10)};
+    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
     return{name_ro:form.albumNameRo||"",name_en:form.albumNameEn||"",cover_url:form.coverUrl||null};
   };
 
+  const [formError, setFormError] = useState("");
   const handleSave=async()=>{
+    setFormError("");
+    // Validate required fields per tab
+    if(tab==="events"){
+      if(!form.title_ro?.trim()||!form.title_en?.trim()){setFormError(lang==="ro"?"Titlul evenimentului (RO și EN) este obligatoriu.":"Event title (RO and EN) is required.");return;}
+      if(!form.status){setFormError(lang==="ro"?"Statusul este obligatoriu.":"Status is required.");return;}
+    }
+    if(tab==="news"||tab==="research"||tab==="education"){
+      if(!form.title_ro?.trim()||!form.title_en?.trim()){setFormError(lang==="ro"?"Titlul (RO și EN) este obligatoriu.":"Title (RO and EN) is required.");return;}
+    }
+    if(tab==="members"){
+      if(!form.name?.trim()||!form.card_number?.trim()){setFormError(lang==="ro"?"Numele și numărul de card sunt obligatorii.":"Name and card number are required.");return;}
+    }
+    if(tab==="gallery"){
+      if(!form.albumNameRo?.trim()||!form.albumNameEn?.trim()){setFormError(lang==="ro"?"Numele albumului (RO și EN) este obligatoriu.":"Album name (RO and EN) is required.");return;}
+    }
     setSaving(true);
     const[data,setter,tableName]=getData();
-    const payload=buildPayload();
+    let payload=buildPayload();
+    // Resolve async password hash for members
+    if(tab==="members"&&payload.password_hash?.startsWith("__PENDING__")){
+      const plainPw = payload.password_hash.replace("__PENDING__","");
+      payload.password_hash = await hashPasswordAsync(plainPw);
+    }
     const tname=tableName==="gallery"?"albums":tableName;
     try{
       if(editItem){await db.update(tname,editItem.id,payload);setter(arr=>arr.map(x=>x.id===editItem.id?{...x,...payload}:x));}
@@ -1155,10 +1304,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
                   {events.map(ev=><option key={ev.id} value={ev.id}>{lang==="ro"?ev.title_ro:ev.title_en}</option>)}
                 </select>
               </div>
-              <div>
-                <label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields.cert_image_url}</label>
-                <input value={certForm.cert_image_url||""} onChange={e=>setCertForm(p=>({...p,cert_image_url:e.target.value}))} style={inputStyleA} placeholder="https://..."/>
-              </div>
+              <FileUploadField label={t.fields.cert_image_url||"Certificat"} value={certForm.cert_image_url||""} onChange={v=>setCertForm(p=>({...p,cert_image_url:v}))} accept="image/*" bucket="images"/>
             </div>
             <div style={{display:"flex",gap:10,marginTop:16}}>
               <button onClick={handleAddCert} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}}>{t.save}</button>
@@ -1202,9 +1348,9 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         {showPhotoForm&&(
           <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:24,marginBottom:24}}>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
-              {["photoUrl","captionRo","captionEn"].map(f=>(
-                <div key={f}><label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields[f]||f}</label><input value={photoForm[f]||""} onChange={e=>setPhotoForm(p=>({...p,[f]:e.target.value}))} style={inputStyleA} placeholder={f==="photoUrl"?"https://...":""}/></div>
-              ))}
+              <FileUploadField label={t.fields["photoUrl"]||"Fotografie"} value={photoForm.photoUrl||""} onChange={v=>setPhotoForm(p=>({...p,photoUrl:v}))} accept="image/*" bucket="images"/>
+              <div><label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields["captionRo"]||"Legendă RO"} <span style={{color:"#aaa",fontWeight:400}}>(opțional)</span></label><input value={photoForm.captionRo||""} onChange={e=>setPhotoForm(p=>({...p,captionRo:e.target.value}))} style={inputStyleA}/></div>
+              <div><label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields["captionEn"]||"Legendă EN"} <span style={{color:"#aaa",fontWeight:400}}>(opțional)</span></label><input value={photoForm.captionEn||""} onChange={e=>setPhotoForm(p=>({...p,captionEn:e.target.value}))} style={inputStyleA}/></div>
             </div>
             <div style={{display:"flex",gap:10,marginTop:16}}>
               <button onClick={handleAddPhoto} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}}>{t.save}</button>
@@ -1231,26 +1377,50 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     <div style={{maxWidth:1000,margin:"80px auto",padding:"40px 24px"}}>
       <h2 style={{fontFamily:"Georgia,serif",margin:"0 0 32px"}}>{t.title}</h2>
       <div style={{display:"flex",gap:6,marginBottom:28,borderBottom:`2px solid ${GREEN_LIGHT_A}`,flexWrap:"wrap"}}>
-        {tabs.map(tb=><button key={tb.key} onClick={()=>{setTab(tb.key);closeForm();}} style={{background:tab===tb.key?GREEN_A:"transparent",color:tab===tb.key?"white":GREEN_A,border:`2px solid ${GREEN_A}`,padding:"8px 16px",borderRadius:"6px 6px 0 0",cursor:"pointer",fontSize:13,fontWeight:600,fontFamily:"inherit",borderBottom:"none",marginBottom:-2}}>{tb.label}</button>)}
+        {tabs.map(tb=><button key={tb.key} onClick={()=>{setTab(tb.key);closeForm();setFormError("");}} style={{background:tab===tb.key?GREEN_A:"transparent",color:tab===tb.key?"white":GREEN_A,border:`2px solid ${GREEN_A}`,padding:"8px 16px",borderRadius:"6px 6px 0 0",cursor:"pointer",fontSize:13,fontWeight:600,fontFamily:"inherit",borderBottom:"none",marginBottom:-2}}>{tb.label}</button>)}
       </div>
-      <div style={{display:"flex",justifyContent:"flex-end",marginBottom:20}}>
-        <button onClick={openAdd} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 22px",borderRadius:8,cursor:"pointer",fontWeight:600,fontSize:14,fontFamily:"inherit"}}>+ {addLabel}</button>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+        <span style={{fontSize:12,color:"#999"}}>* {lang==="ro"?"câmp obligatoriu":"required field"}</span>
+        <button onClick={()=>{openAdd();setFormError("");}} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 22px",borderRadius:8,cursor:"pointer",fontWeight:600,fontSize:14,fontFamily:"inherit"}}>+ {addLabel}</button>
       </div>
       {showForm&&(
         <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:28,marginBottom:28}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
-            {currentFields.map(f=>(
-              <div key={f}>
-                <label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{fieldLabel(f)}</label>
-                {f==="status"?<select value={form[f]||"upcoming"} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} style={inputStyleA}><option value="upcoming">Upcoming</option><option value="ongoing">Ongoing</option><option value="past">Past</option></select>
-                :(f.includes("body")||f.includes("desc"))?<textarea value={form[f]||""} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} rows={3} style={{...inputStyleA,resize:"vertical"}}/>
-                :<input value={form[f]||""} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} type={f==="password"?"password":f==="date"||f==="join_date"?"date":"text"} style={inputStyleA}/>}
-              </div>
-            ))}
+            {currentFields.map(f=>{
+              const isImageField = f==="image_url"||f==="speakers_image_url"||f==="coverUrl"||f==="cert_image_url";
+              const isPdfField = f==="agenda_url";
+              const isOptional = f==="image_url"||f==="speakers_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
+              if(isImageField) return(
+                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept="image/*" bucket="images" optional={isOptional}/>
+              );
+              if(isPdfField) return(
+                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept=".pdf,application/pdf" bucket="documents" optional={true}/>
+              );
+              return(
+                <div key={f}>
+                  <label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{fieldLabel(f)}{isOptional&&<span style={{color:"#aaa",fontWeight:400}}> (opțional)</span>}</label>
+                  {f==="status"
+                    ?<select value={form[f]||"upcoming"} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} style={inputStyleA}>
+                      <option value="upcoming">{lang==="ro"?"Urmează":"Upcoming"}</option>
+                      <option value="ongoing">{lang==="ro"?"În desfășurare":"Ongoing"}</option>
+                      <option value="past">{lang==="ro"?"Trecut":"Past"}</option>
+                    </select>
+                  :f==="album_id"
+                    ?<select value={form[f]||""} onChange={e=>setForm(p=>({...p,[f]:e.target.value||null}))} style={inputStyleA}>
+                      <option value="">{lang==="ro"?"— Niciun album —":"— No album —"}</option>
+                      {albums.map(a=><option key={a.id} value={a.id}>{lang==="ro"?a.name_ro:a.name_en}</option>)}
+                    </select>
+                  :(f.includes("body")||f.includes("desc"))
+                    ?<textarea value={form[f]||""} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} rows={3} style={{...inputStyleA,resize:"vertical"}}/>
+                  :<input value={form[f]||""} onChange={e=>setForm(p=>({...p,[f]:e.target.value}))} type={f==="password"?"password":f==="date"||f==="join_date"?"date":"text"} style={inputStyleA}/>}
+                </div>
+              );
+            })}
           </div>
-          <div style={{display:"flex",gap:10,marginTop:20}}>
+          {formError&&<div style={{background:"#fdf0ee",color:"#c0392b",border:"1px solid #f5c6c0",borderRadius:8,padding:"10px 14px",fontSize:13,marginTop:16}}>{formError}</div>}
+          <div style={{display:"flex",gap:10,marginTop:12}}>
             <button onClick={handleSave} disabled={saving} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"inherit",opacity:saving?0.7:1}}>{saving?"...":t.save}</button>
-            <button onClick={closeForm} style={{background:"white",color:"#555",border:"1px solid #ccc",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontFamily:"inherit"}}>{t.cancel}</button>
+            <button onClick={()=>{closeForm();setFormError("");}} style={{background:"white",color:"#555",border:"1px solid #ccc",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontFamily:"inherit"}}>{t.cancel}</button>
           </div>
         </div>
       )}
@@ -1282,6 +1452,109 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   );
 }
 
+
+// ─── CONTACT PAGE ─────────────────────────────────────────────────────────────
+function ContactPage() {
+  const {lang} = useLang();
+  const t = T[lang].contact;
+
+  const contactItems = [
+    { icon:"✉", label:t.email, value:t.emailVal, href:`mailto:${t.emailVal}`, color:GREEN },
+    { icon:"📞", label:t.phone, value:t.phoneVal, href:`tel:${t.phoneVal.replace(/\s/g,"")}`, color:GREEN },
+  ];
+
+  return (
+    <div>
+      <PageHero title={t.title} subtitle={t.subtitle}/>
+      <section style={{background:"#f8f9fa", padding:"80px 32px"}}>
+        <div style={{maxWidth:1000, margin:"0 auto"}}>
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:40}}>
+
+            {/* Write to us */}
+            <div style={{background:"white", borderRadius:20, padding:40, boxShadow:"0 4px 24px rgba(0,0,0,0.07)"}}>
+              <div style={{fontSize:40, marginBottom:20}}>💬</div>
+              <h2 style={{fontFamily:"Georgia,serif", fontSize:24, color:"#1a1a1a", margin:"0 0 16px"}}>{t.writeUs}</h2>
+              <p style={{color:"#666", fontSize:15, lineHeight:1.8, margin:"0 0 32px"}}>{t.writeUsDesc}</p>
+              <div style={{display:"flex", flexDirection:"column", gap:16}}>
+                {contactItems.map(item => (
+                  <a key={item.label} href={item.href} style={{display:"flex", alignItems:"center", gap:16, padding:"16px 20px", background:"#f8f9fa", borderRadius:12, textDecoration:"none", border:`1px solid #eee`, transition:"all 0.2s"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background=GREEN_LIGHT;e.currentTarget.style.borderColor=GREEN;}}
+                    onMouseLeave={e=>{e.currentTarget.style.background="#f8f9fa";e.currentTarget.style.borderColor="#eee";}}
+                  >
+                    <div style={{width:44, height:44, borderRadius:"50%", background:GREEN_LIGHT, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0}}>{item.icon}</div>
+                    <div>
+                      <div style={{fontSize:12, color:"#999", marginBottom:2, fontWeight:600, letterSpacing:0.5, textTransform:"uppercase"}}>{item.label}</div>
+                      <div style={{fontSize:15, color:"#1a1a1a", fontWeight:700}}>{item.value}</div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Follow us */}
+            <div style={{display:"flex", flexDirection:"column", gap:24}}>
+              <div style={{background:"white", borderRadius:20, padding:40, boxShadow:"0 4px 24px rgba(0,0,0,0.07)"}}>
+                <div style={{fontSize:40, marginBottom:20}}>🌐</div>
+                <h2 style={{fontFamily:"Georgia,serif", fontSize:24, color:"#1a1a1a", margin:"0 0 16px"}}>{t.followUs}</h2>
+                <a href="https://www.facebook.com/people/Alian%C8%9Ba-pentru-Boli-Hepatice-Rare-din-Moldova/61552694548049/" target="_blank" rel="noreferrer"
+                  style={{display:"flex", alignItems:"center", gap:16, padding:"20px", background:"#f0f4ff", borderRadius:12, textDecoration:"none", border:"1px solid #d0d9ff", transition:"all 0.2s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.background="#e0e8ff";e.currentTarget.style.borderColor="#3b5998";}}
+                  onMouseLeave={e=>{e.currentTarget.style.background="#f0f4ff";e.currentTarget.style.borderColor="#d0d9ff";}}
+                >
+                  <div style={{width:48, height:48, borderRadius:10, background:"#3b5998", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0}}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{fontSize:12, color:"#3b5998", marginBottom:2, fontWeight:700, letterSpacing:0.5}}>FACEBOOK</div>
+                    <div style={{fontSize:14, color:"#1a1a1a", fontWeight:600, lineHeight:1.3}}>{t.facebookLabel}</div>
+                  </div>
+                </a>
+              </div>
+
+              {/* Location */}
+              <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`, borderRadius:20, padding:40, position:"relative", overflow:"hidden"}}>
+                <WavyBg color="rgba(255,255,255,0.05)"/>
+                <div style={{position:"relative", zIndex:2}}>
+                  <div style={{fontSize:40, marginBottom:16}}>📍</div>
+                  <h3 style={{fontFamily:"Georgia,serif", fontSize:20, color:"white", margin:"0 0 8px"}}>{t.orgName||"ABHR"}</h3>
+                  <p style={{color:"rgba(255,255,255,0.7)", fontSize:15, margin:0}}>{t.address}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─── ERROR BOUNDARY ──────────────────────────────────────────────────────────
+class ErrorBoundary extends React.Component {
+  constructor(props){ super(props); this.state={hasError:false,error:null}; }
+  static getDerivedStateFromError(error){ return{hasError:true,error}; }
+  componentDidCatch(error,info){ console.error("ABHR Error:",error,info); }
+  render(){
+    if(this.state.hasError){
+      return(
+        <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,flexDirection:"column",gap:20,padding:32,position:"relative",overflow:"hidden"}}>
+          <WavyBg/>
+          <div style={{position:"relative",zIndex:2,textAlign:"center",maxWidth:500}}>
+            <div style={{fontSize:64,marginBottom:16}}>⚠️</div>
+            <h2 style={{fontFamily:"Georgia,serif",color:"white",fontSize:28,margin:"0 0 16px"}}>Ceva nu a funcționat</h2>
+            <p style={{color:"rgba(255,255,255,0.7)",fontSize:15,lineHeight:1.7,margin:"0 0 32px"}}>A apărut o eroare neașteptată. Vă rugăm să reîncărcați pagina.</p>
+            <button onClick={()=>window.location.reload()} style={{background:GREEN_ACCENT,border:"none",color:"white",padding:"14px 32px",borderRadius:50,fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 6px 28px rgba(46,204,138,0.4)"}}>
+              Reîncarcă pagina
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // ─── ROOT APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang,setLang] = useState("ro");
@@ -1300,6 +1573,38 @@ export default function App() {
   const [selectedEvent,setSelectedEvent] = useState(null);
   const [selectedArticle,setSelectedArticle] = useState(null);
 
+  // SEO: update page title and meta description on page change
+  useEffect(()=>{
+    const titles = {
+      home: lang==="ro"?"Acasă — ABHR":"Home — ABHR",
+      about: lang==="ro"?"Despre Noi — ABHR":"About Us — ABHR",
+      news: lang==="ro"?"Știri — ABHR":"News — ABHR",
+      events: lang==="ro"?"Evenimente — ABHR":"Events — ABHR",
+      gallery: lang==="ro"?"Galerie — ABHR":"Gallery — ABHR",
+      research: lang==="ro"?"Cercetare — ABHR":"Research — ABHR",
+      education: lang==="ro"?"Educație — ABHR":"Education — ABHR",
+      contact: "Contact — ABHR",
+      profile: lang==="ro"?"Profilul Meu — ABHR":"My Profile — ABHR",
+      login: lang==="ro"?"Autentificare — ABHR":"Login — ABHR",
+      admin: "Admin — ABHR",
+    };
+    const descs = {
+      home: lang==="ro"?"Alianța pentru Boli Hepatice Rare susține pacienții din Republica Moldova.":"The Alliance for Rare Hepatic Diseases supports patients in the Republic of Moldova.",
+      contact: lang==="ro"?"Contactați Alianța pentru Boli Hepatice Rare.":"Contact the Alliance for Rare Hepatic Diseases.",
+    };
+    document.title = titles[cp] || "ABHR — Alianța pentru Boli Hepatice Rare";
+    let metaDesc = document.querySelector("meta[name='description']");
+    if(!metaDesc){ metaDesc=document.createElement("meta"); metaDesc.name="description"; document.head.appendChild(metaDesc); }
+    metaDesc.content = descs[cp] || (lang==="ro"?"Alianța pentru Boli Hepatice Rare din Republica Moldova.":"Alliance for Rare Hepatic Diseases from the Republic of Moldova.");
+    // Open Graph tags
+    const ogTags = { "og:title": document.title, "og:description": metaDesc.content, "og:type":"website", "og:url": window.location.href };
+    Object.entries(ogTags).forEach(([prop,val])=>{
+      let tag = document.querySelector(`meta[property='${prop}']`);
+      if(!tag){ tag=document.createElement("meta"); tag.setAttribute("property",prop); document.head.appendChild(tag); }
+      tag.content = val;
+    });
+  },[cp,lang]);
+
   useEffect(()=>{
     const load=async()=>{
       setLoading(true);
@@ -1312,7 +1617,11 @@ export default function App() {
 
   const login=async(cardNumber,password)=>{
     if(cardNumber===ADMIN_CARD&&password===ADMIN_PASS){const u={cardNumber:ADMIN_CARD,name:"Administrator",isAdmin:true};setUser(u);return u;}
-    const member=members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
+    // Try SHA-256 hash first (new secure method)
+    const sha256Hash = await hashPasswordAsync(password);
+    let member = members.find(m=>m.card_number===cardNumber&&m.password_hash===sha256Hash);
+    // Fallback to base64 for existing members until passwords are reset
+    if(!member) member = members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
     if(member){setUser(member);return member;}
     return null;
   };
@@ -1331,14 +1640,58 @@ export default function App() {
   const openPanel=()=>setPanelOpen(true);
 
   if(loading) return(
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20,background:GREEN_DARK,position:"relative",overflow:"hidden"}}>
-      <WavyBg/>
-      <div style={{position:"relative",zIndex:2,textAlign:"center"}}>
-        <ABHRLogo size={72} white horizontal/>
-        <div style={{color:"rgba(255,255,255,0.7)",fontSize:16,fontFamily:"Georgia,serif",marginTop:24}}>{T[lang].loading}</div>
-        <div style={{width:48,height:3,background:GREEN_ACCENT,borderRadius:2,margin:"16px auto 0",animation:"pulse 1.5s ease-in-out infinite"}}/>
+    <div style={{minHeight:"100vh",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa"}}>
+      <style>{`
+        @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+        .sk{background:linear-gradient(90deg,#e8e8e8 25%,#f5f5f5 50%,#e8e8e8 75%);background-size:1000px 100%;animation:shimmer 1.8s infinite linear;border-radius:8px;}
+      `}</style>
+      {/* Skeleton Navbar */}
+      <div style={{height:72,background:"white",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",padding:"0 32px",gap:20}}>
+        <div className="sk" style={{width:180,height:36}}/>
+        <div style={{flex:1}}/>
+        {[80,70,80,70,90].map((w,i)=><div key={i} className="sk" style={{width:w,height:14}}/>)}
+        <div className="sk" style={{width:120,height:36,borderRadius:50}}/>
       </div>
-      <style>{`@keyframes pulse{0%,100%{opacity:0.4;transform:scaleX(0.7)}50%{opacity:1;transform:scaleX(1)}}`}</style>
+      {/* Skeleton Hero */}
+      <div style={{background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,minHeight:480,padding:"80px 32px",display:"flex",alignItems:"center"}}>
+        <div style={{maxWidth:1200,margin:"0 auto",width:"100%"}}>
+          <div style={{maxWidth:600,display:"flex",flexDirection:"column",gap:20}}>
+            <div style={{width:180,height:14,background:"rgba(255,255,255,0.15)",borderRadius:50}}/>
+            {[320,280,220].map((w,i)=><div key={i} style={{width:w,height:i===2?52:64,background:"rgba(255,255,255,0.12)",borderRadius:8,animation:"shimmer 1.8s infinite linear",backgroundSize:"1000px 100%",backgroundImage:"linear-gradient(90deg,rgba(255,255,255,0.08) 25%,rgba(255,255,255,0.15) 50%,rgba(255,255,255,0.08) 75%)"}}/>)}
+            <div style={{width:380,height:16,background:"rgba(255,255,255,0.1)",borderRadius:6}}/>
+            <div style={{display:"flex",gap:16,marginTop:8}}>
+              <div style={{width:140,height:48,background:"rgba(46,204,138,0.4)",borderRadius:50}}/>
+              <div style={{width:140,height:48,background:"rgba(255,255,255,0.1)",borderRadius:50}}/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Skeleton Stats */}
+      <div style={{background:GREEN,padding:"48px 32px"}}>
+        <div style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0}}>
+          {[0,1,2,3].map(i=>(
+            <div key={i} style={{textAlign:"center",padding:"16px 24px",borderRight:i<3?"1px solid rgba(255,255,255,0.2)":"none",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
+              <div style={{width:36,height:36,background:"rgba(255,255,255,0.15)",borderRadius:"50%"}}/>
+              <div style={{width:80,height:32,background:"rgba(255,255,255,0.15)",borderRadius:6}}/>
+              <div style={{width:100,height:12,background:"rgba(255,255,255,0.1)",borderRadius:6}}/>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Skeleton Cards */}
+      <div style={{maxWidth:1200,margin:"60px auto",padding:"0 32px",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:24}}>
+        {[1,2,3].map(i=>(
+          <div key={i} style={{background:"white",borderRadius:20,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+            <div className="sk" style={{height:180,borderRadius:0}}/>
+            <div style={{padding:24,display:"flex",flexDirection:"column",gap:12}}>
+              <div className="sk" style={{width:80,height:12}}/>
+              <div className="sk" style={{width:"90%",height:20}}/>
+              <div className="sk" style={{width:"100%",height:12}}/>
+              <div className="sk" style={{width:"75%",height:12}}/>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 
@@ -1348,6 +1701,7 @@ export default function App() {
   const showNav=!noNavPages.includes(cp);
 
   return(
+    <ErrorBoundary>
     <LangContext.Provider value={{lang,setLang}}>
       <AuthContext.Provider value={{user,login,logout}}>
         <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa"}}>
@@ -1365,6 +1719,7 @@ export default function App() {
             {cp==="research"&&<ArticleListPage items={research} type="research" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
             {cp==="researchDetail"&&<ArticleDetailPage item={selectedArticle} type="research" setPage={setPage}/>}
             {cp==="education"&&<ArticleListPage items={education} type="education" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
+            {cp==="contact"&&<ContactPage/>}
             {cp==="educationDetail"&&<ArticleDetailPage item={selectedArticle} type="education" setPage={setPage}/>}
             {cp==="profile"&&<ProfilePage certificates={certificates} events={events}/>}
             {cp==="login"&&<LoginPage setPage={setPage}/>}
@@ -1374,5 +1729,6 @@ export default function App() {
         </div>
       </AuthContext.Provider>
     </LangContext.Provider>
+    </ErrorBoundary>
   );
 }
