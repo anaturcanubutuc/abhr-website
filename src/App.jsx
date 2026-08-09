@@ -327,8 +327,7 @@ function ContentCard({item, onClick, type="news"}) {
           {type==="event"&&<StatusBadge status={item.status}/>}
         </div>
         <h3 style={{fontFamily:"Georgia,serif",fontSize:19,color:"#1a1a1a",margin:"0 0 12px",lineHeight:1.3}}>{title}</h3>
-        {body&&<p style={{color:"#666",fontSize:14,lineHeight:1.7,margin:"0 0 20px"}}>{body.replace(/
-/g," ").slice(0,120)}{body.length>120?"…":""}</p>}
+        {body&&<p style={{color:"#666",fontSize:14,lineHeight:1.7,margin:"0 0 20px"}}>{body.split("\n").join(" ").slice(0,120)}{body.length>120?"…":""}</p>}
         {type==="event"&&item.location_ro&&<div style={{fontSize:13,color:"#888",marginBottom:16}}>📍 {lang==="ro"?item.location_ro:item.location_en}</div>}
         <span style={{color:GREEN,fontSize:13,fontWeight:700}}>{type==="event"?t.events.details+" ↗":t.news.readMore}</span>
       </div>
