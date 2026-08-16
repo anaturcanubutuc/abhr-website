@@ -13,7 +13,7 @@ async function hashPasswordAsync(password) {
 }
 // Sync fallback for demo data only
 const hashPassword = (p) => btoa(p);
-const ADMIN_CARD = "12345678", ADMIN_PASS = "abhr123";
+const ADMIN_UUID = "cea1d64e-ed41-4493-816b-99500b9b39a6";
 
 const GREEN="#1a6b4a", GREEN_DARK="#0a2540", GREEN_MID="#0d3d45", GREEN_LIGHT="#e8f5ee";
 const GREEN_ACCENT="#2ecc8a", RED="#c0392b", RED_LIGHT="#fdf0ee";
@@ -61,6 +61,30 @@ const db = {
   },
   async delete(table,id){
     try{await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{method:"DELETE",headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});}catch{}
+  }
+};
+
+// ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
+const auth = {
+  async signIn(email, password) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (data.error) return null;
+      return data; // contains access_token and user
+    } catch { return null; }
+  },
+  async signOut(accessToken) {
+    try {
+      await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${accessToken}` },
+      });
+    } catch {}
   }
 };
 
@@ -177,7 +201,7 @@ const T = {
     research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare"},
     education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație"},
     profile:{title:"Profilul Meu",name:"Nume",memberId:"Număr Membru",joinDate:"Data Înscrierii",email:"Email",certs:"Certificate de Participare",noCerts:"Nu există certificate.",download:"Descarcă PDF",view:"Vezi"},
-    login:{title:"Autentificare Membri",cardLabel:"Număr Card Membru",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
+    login:{title:"Autentificare Membri",cardLabel:"Număr Card Membru / Email Admin",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
     member:{title:"Solicită Cardul de Membru",subtitle:"Completați formularul și administratorul vă va contacta.",name:"Nume complet *",email:"Adresă email *",phone:"Număr de telefon",city:"Oraș / Localitate",message:"Mesaj sau informații suplimentare...",submit:"Trimite Cererea ↗",sent:"Cerere trimisă!",sentDesc:"Administratorul ABHR va procesa cererea și vă va contacta în curând.",again:"Trimite altă cerere",benefits:["Certificate de participare","Resurse educaționale exclusive","Comunitate de suport","Invitații la conferințe"],join:"Alătură-te Nouă",required:"* Câmpuri obligatorii."},
     faq:{title:"Întrebări Frecvente",subtitle:"Aveți întrebări despre ABHR?",desc:"Găsiți răspunsuri la cele mai frecvente întrebări despre organizația noastră.",notFound:"Nu găsiți răspunsul?",notFoundDesc:"Contactați-ne direct și vă vom răspunde în cel mai scurt timp.",contact:"Contactați-ne ↗",
       items:[
@@ -218,7 +242,7 @@ const T = {
     research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research"},
     education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education"},
     profile:{title:"My Profile",name:"Name",memberId:"Member Number",joinDate:"Join Date",email:"Email",certs:"Participation Certificates",noCerts:"No certificates available.",download:"Download PDF",view:"View"},
-    login:{title:"Member Login",cardLabel:"Member Card Number",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
+    login:{title:"Member Login",cardLabel:"Member Card Number / Admin Email",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
     member:{title:"Request Member Card",subtitle:"Fill the form and the administrator will contact you.",name:"Full name *",email:"Email address *",phone:"Phone number",city:"City / Locality",message:"Message or additional information...",submit:"Send Request ↗",sent:"Request sent!",sentDesc:"The ABHR administrator will process your request and contact you soon.",again:"Send another request",benefits:["Participation certificates","Exclusive educational resources","Support community","Conference invitations"],join:"Join Us",required:"* Required fields."},
     faq:{title:"FAQ",subtitle:"Do you have questions about ABHR?",desc:"Find answers to the most frequently asked questions about our organization.",notFound:"Can't find the answer?",notFoundDesc:"Contact us directly and we will respond as soon as possible.",contact:"Contact us ↗",
       items:[
@@ -1098,7 +1122,7 @@ function LoginPage({setPage}) {
         </div>
         <div style={{marginBottom:18}}>
           <label style={{display:"block",marginBottom:6,fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.75)"}}>{t.cardLabel}</label>
-          <input value={card} onChange={e=>setCard(e.target.value)} placeholder="ABHR-001"
+          <input value={card} onChange={e=>setCard(e.target.value)} placeholder={lang==="ro"?"Nr. card sau email admin":"Card number or admin email"}
             style={{width:"100%",padding:"13px 16px",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,color:"white",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
             onFocus={e=>e.target.style.border=`1px solid ${GREEN_ACCENT}`} onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.15)"}
           />
@@ -1674,17 +1698,33 @@ export default function App() {
     load();
   },[]);
 
+  const [accessToken, setAccessToken] = useState(null);
+
   const login=async(cardNumber,password)=>{
-    if(cardNumber===ADMIN_CARD&&password===ADMIN_PASS){const u={cardNumber:ADMIN_CARD,name:"Administrator",isAdmin:true};setUser(u);return u;}
-    // Try SHA-256 hash first (new secure method)
+    // Check if it looks like an email (admin login via Supabase Auth)
+    if(cardNumber.includes("@")) {
+      const result = await auth.signIn(cardNumber, password);
+      if(result && result.user?.id === ADMIN_UUID) {
+        const u={email:cardNumber, name:"Administrator", isAdmin:true};
+        setUser(u);
+        setAccessToken(result.access_token);
+        return u;
+      }
+      return null;
+    }
+    // Member login via card number
     const sha256Hash = await hashPasswordAsync(password);
     let member = members.find(m=>m.card_number===cardNumber&&m.password_hash===sha256Hash);
-    // Fallback to base64 for existing members until passwords are reset
     if(!member) member = members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
     if(member){setUser(member);return member;}
     return null;
   };
-  const logout=()=>{setUser(null);setPage("home");};
+  const logout=async()=>{
+    if(accessToken) await auth.signOut(accessToken);
+    setUser(null);
+    setAccessToken(null);
+    setPage("home");
+  };
 
   const safePage=()=>{
     if(page==="profile"&&!user)return"login";
