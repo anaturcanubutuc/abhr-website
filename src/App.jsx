@@ -410,6 +410,14 @@ function MemberPanel({open,onClose}) {
     setErrors(e);
     if(Object.keys(e).length>0) return;
     try { await db.insert("membership_requests", form); } catch {}
+    // Send email notification to admin
+    try {
+      await fetch("/api/notify-membership", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch {}
     setSubmitted(true);
   };
   return (
