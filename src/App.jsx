@@ -95,19 +95,35 @@ const storage = {
 };
 
 // ─── FILE UPLOAD FIELD COMPONENT ──────────────────────────────────────────────
-function FileUploadField({ label, value, onChange, accept, bucket, optional }) {
+function FileUploadField({ label, value, onChange, accept, bucket, optional, multiple=false, onMultiple }) {
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
   const [preview, setPreview] = useState(value || "");
   const inputRef = useRef(null);
 
   const handleFile = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
     setUploading(true);
-    const url = await storage.upload(bucket, file);
-    setUploading(false);
-    if (url) { setPreview(url); onChange(url); }
-    else alert("Upload failed. Please try again.");
+
+    if (multiple && onMultiple) {
+      // Upload all files and return array of URLs
+      const urls = [];
+      for (let i = 0; i < files.length; i++) {
+        setUploadProgress(`Se încarcă ${i+1} din ${files.length}...`);
+        const url = await storage.upload(bucket, files[i]);
+        if (url) urls.push({ url, name: files[i].name });
+      }
+      setUploading(false);
+      setUploadProgress("");
+      if (urls.length > 0) onMultiple(urls);
+    } else {
+      const file = files[0];
+      const url = await storage.upload(bucket, file);
+      setUploading(false);
+      if (url) { setPreview(url); onChange(url); }
+      else alert("Upload failed. Please try again.");
+    }
   };
 
   const handleClear = () => { setPreview(""); onChange(null); if (inputRef.current) inputRef.current.value = ""; };
@@ -120,7 +136,7 @@ function FileUploadField({ label, value, onChange, accept, bucket, optional }) {
       <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 5 }}>
         {label} {optional && <span style={{ color: "#aaa", fontWeight: 400 }}>(opțional)</span>}
       </label>
-      {preview ? (
+      {preview && !multiple ? (
         <div style={{ border: "1.5px solid #ddd", borderRadius: 8, padding: 10, background: "white" }}>
           {isImage && <img src={preview} alt="preview" style={{ width: "100%", maxHeight: 120, objectFit: "cover", borderRadius: 6, marginBottom: 8 }} />}
           {isPdf && <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}><span style={{ fontSize: 24 }}>📄</span><a href={preview} target="_blank" rel="noreferrer" style={{ color: "#1a6b4a", fontSize: 13, fontWeight: 600 }}>Vezi PDF</a></div>}
@@ -135,12 +151,16 @@ function FileUploadField({ label, value, onChange, accept, bucket, optional }) {
           onMouseLeave={e => e.currentTarget.style.borderColor = "#ccc"}
         >
           {uploading
-            ? <div style={{ color: "#888", fontSize: 13 }}>⏳ Se încarcă...</div>
-            : <div><div style={{ fontSize: 24, marginBottom: 4 }}>{isImage ? "🖼" : "📄"}</div><div style={{ fontSize: 13, color: "#888" }}>Click pentru a încărca {isImage ? "imagine" : "PDF"}</div><div style={{ fontSize: 11, color: "#bbb", marginTop: 4 }}>{isImage ? "JPG, PNG, WEBP" : "PDF"}</div></div>
+            ? <div style={{ color: "#888", fontSize: 13 }}>⏳ {uploadProgress || "Se încarcă..."}</div>
+            : <div>
+                <div style={{ fontSize: 24, marginBottom: 4 }}>{isImage ? "🖼" : "📄"}</div>
+                <div style={{ fontSize: 13, color: "#888" }}>Click pentru a încărca {isImage ? (multiple ? "imagini" : "imagine") : "PDF"}</div>
+                <div style={{ fontSize: 11, color: "#bbb", marginTop: 4 }}>{isImage ? (multiple ? "JPG, PNG, WEBP — selectați mai multe" : "JPG, PNG, WEBP") : "PDF"}</div>
+              </div>
           }
         </div>
       )}
-      <input ref={inputRef} type="file" accept={accept} onChange={handleFile} style={{ display: "none" }} />
+      <input ref={inputRef} type="file" accept={accept} multiple={multiple} onChange={handleFile} style={{ display: "none" }} />
     </div>
   );
 }
@@ -572,7 +592,14 @@ function HomePage({setPage,news,events,onMemberClick}) {
     return()=>obs.disconnect();
   },[]);
   const counts = [useCountUp(120,1800,statsStarted),useCountUp(24,1600,statsStarted),useCountUp(48,2000,statsStarted),useCountUp(6,1200,statsStarted)];
-  const homeEvents=(()=>{const on=events.filter(e=>e.status==="ongoing");const up=events.filter(e=>e.status==="upcoming").sort((a,b)=>new Date(a.date)-new Date(b.date));return on.length>0?[on[0],...up.slice(0,1)].slice(0,2):up.slice(0,2);})();
+  const homeEvents=(()=>{
+    const on=events.filter(e=>e.status==="ongoing");
+    const up=events.filter(e=>e.status==="upcoming").sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const past=events.filter(e=>e.status==="past").sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if(on.length>0) return [on[0],...up.slice(0,1)].slice(0,2);
+    if(up.length>0) return up.slice(0,2);
+    return past.slice(0,2);
+  })();
 
   return (
     <div>
@@ -862,7 +889,7 @@ function EventsListPage({events,setSelectedEvent,setPage}) {
   );
 }
 
-function EventDetailPage({item,setPage,albums}) {
+function EventDetailPage({item,setPage,albums,setSelectedGalleryAlbum}) {
   const {lang} = useLang();
   const t = T[lang].events;
   if(!item){setPage("events");return null;}
@@ -893,9 +920,16 @@ function EventDetailPage({item,setPage,albums}) {
         <div style={{maxWidth:900,margin:"0 auto",display:"flex",flexDirection:"column",gap:24}}>
           {desc&&<div style={{background:"white",borderRadius:16,padding:36,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}><p style={{fontSize:16,lineHeight:1.9,color:"#333",margin:0,whiteSpace:"pre-wrap"}}>{desc}</p></div>}
           {item.agenda_url&&(
-            <div style={{background:"white",borderRadius:16,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
-              <div style={{display:"flex",alignItems:"center",gap:14}}><span style={{fontSize:32}}>📄</span><div><div style={{fontWeight:700,color:"#1a1a1a"}}>{t.agenda}</div></div></div>
-              <a href={item.agenda_url} target="_blank" rel="noreferrer"><PillBtn small variant="dark">Download</PillBtn></a>
+            <div style={{background:"white",borderRadius:16,padding:28,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
+                <div style={{display:"flex",alignItems:"center",gap:14}}><span style={{fontSize:32}}>📄</span><div style={{fontWeight:700,color:"#1a1a1a",fontSize:16}}>{t.agenda}</div></div>
+                <a href={item.agenda_url} target="_blank" rel="noreferrer"><PillBtn small variant="dark">↓ Download</PillBtn></a>
+              </div>
+              <iframe
+                src={`https://docs.google.com/gview?url=${encodeURIComponent(item.agenda_url)}&embedded=true`}
+                style={{width:"100%",height:500,border:"none",borderRadius:10,background:"#f5f5f5"}}
+                title="Agenda"
+              />
             </div>
           )}
           {item.speakers_image_url&&(
@@ -910,7 +944,7 @@ function EventDetailPage({item,setPage,albums}) {
                 {linkedAlbum.cover_url&&<img src={linkedAlbum.cover_url} alt="" style={{width:72,height:52,objectFit:"cover",borderRadius:8}}/>}
                 <div><div style={{fontSize:12,color:"#888",marginBottom:4}}>{t.gallery}</div><div style={{fontWeight:700,color:"#1a1a1a"}}>{lang==="ro"?linkedAlbum.name_ro:linkedAlbum.name_en}</div></div>
               </div>
-              <PillBtn small variant="dark" onClick={()=>setPage("gallery")}>{t.viewGallery}</PillBtn>
+              <PillBtn small variant="dark" onClick={()=>{ if(setSelectedGalleryAlbum) setSelectedGalleryAlbum(linkedAlbum); setPage("gallery"); }}>{t.viewGallery}</PillBtn>
             </div>
           )}
         </div>
@@ -920,11 +954,14 @@ function EventDetailPage({item,setPage,albums}) {
 }
 
 // ─── GALLERY PAGE ─────────────────────────────────────────────────────────────
-function GalleryPage({albums}) {
+function GalleryPage({albums, initialAlbum=null, onAlbumOpen}) {
   const {lang} = useLang();
   const t = T[lang].gallery;
-  const [selectedAlbum,setSelectedAlbum] = useState(null);
+  const [selectedAlbum,setSelectedAlbum] = useState(initialAlbum);
   const [lightbox,setLightbox] = useState(null);
+  useEffect(()=>{
+    if(initialAlbum){ setSelectedAlbum(initialAlbum); if(onAlbumOpen) onAlbumOpen(); }
+  },[initialAlbum]);
 
   if(lightbox!==null&&selectedAlbum) {
     const photos=selectedAlbum.photos||[];
@@ -1252,6 +1289,27 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     await db.delete(tname,id);setter(arr=>arr.filter(x=>x.id!==id));
   };
 
+  // Drag-and-drop album reordering
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+
+  const handleDragStart = (idx) => setDragIdx(idx);
+  const handleDragOver = (e, idx) => { e.preventDefault(); setDragOverIdx(idx); };
+  const handleDrop = async (idx) => {
+    if(dragIdx===null||dragIdx===idx){ setDragIdx(null);setDragOverIdx(null);return; }
+    const reordered = [...albums];
+    const [moved] = reordered.splice(dragIdx, 1);
+    reordered.splice(idx, 0, moved);
+    // Update sort_order for all albums
+    const updated = reordered.map((a,i) => ({...a, sort_order:i+1}));
+    setAlbums(updated);
+    setDragIdx(null); setDragOverIdx(null);
+    // Persist to Supabase
+    for(const a of updated){
+      await db.update("albums", a.id, {sort_order: a.sort_order});
+    }
+  };
+
   const handleAddPhoto=async()=>{
     if(!photoForm.photoUrl)return;
     const payload={album_id:photoAlbum.id,url:photoForm.photoUrl,caption_ro:photoForm.captionRo||"",caption_en:photoForm.captionEn||""};
@@ -1347,9 +1405,25 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         {showPhotoForm&&(
           <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:24,marginBottom:24}}>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
-              <FileUploadField label={t.fields["photoUrl"]||"Fotografie"} value={photoForm.photoUrl||""} onChange={v=>setPhotoForm(p=>({...p,photoUrl:v}))} accept="image/*" bucket="images"/>
-              <div><label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields["captionRo"]||"Legendă RO"} <span style={{color:"#aaa",fontWeight:400}}>(opțional)</span></label><input value={photoForm.captionRo||""} onChange={e=>setPhotoForm(p=>({...p,captionRo:e.target.value}))} style={inputStyleA}/></div>
-              <div><label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields["captionEn"]||"Legendă EN"} <span style={{color:"#aaa",fontWeight:400}}>(opțional)</span></label><input value={photoForm.captionEn||""} onChange={e=>setPhotoForm(p=>({...p,captionEn:e.target.value}))} style={inputStyleA}/></div>
+              <FileUploadField
+                label={t.fields["photoUrl"]||"Fotografii"}
+                value=""
+                onChange={()=>{}}
+                accept="image/*"
+                bucket="images"
+                multiple={true}
+                onMultiple={async(files)=>{
+                  for(const f of files){
+                    const payload={album_id:photoAlbum.id,url:f.url,caption_ro:"",caption_en:""};
+                    const res=await db.insert("photos",payload);
+                    const np=res[0]||{...payload,id:Date.now().toString()+Math.random()};
+                    setAlbums(as=>as.map(a=>a.id===photoAlbum.id?{...a,photos:[...(a.photos||[]),np]}:a));
+                    setPhotoAlbum(prev=>({...prev,photos:[...(prev.photos||[]),np]}));
+                  }
+                  setShowPhotoForm(false);
+                }}
+              />
+              <div style={{gridColumn:"span 2"}}><p style={{fontSize:12,color:"#888",margin:"4px 0 0"}}>💡 Puteți adăuga legende fotografiilor după încărcare.</p></div>
             </div>
             <div style={{display:"flex",gap:10,marginTop:16}}>
               <button onClick={handleAddPhoto} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}}>{t.save}</button>
@@ -1379,7 +1453,12 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         {tabs.map(tb=><button key={tb.key} onClick={()=>{setTab(tb.key);closeForm();setFormError("");}} style={{background:tab===tb.key?GREEN_A:"transparent",color:tab===tb.key?"white":GREEN_A,border:`2px solid ${GREEN_A}`,padding:"8px 16px",borderRadius:"6px 6px 0 0",cursor:"pointer",fontSize:13,fontWeight:600,fontFamily:"inherit",borderBottom:"none",marginBottom:-2}}>{tb.label}</button>)}
       </div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
-        <span style={{fontSize:12,color:"#999"}}>* {lang==="ro"?"câmp obligatoriu":"required field"}</span>
+        <span style={{fontSize:12,color:"#999"}}>
+          {tab==="gallery"
+            ? (lang==="ro"?"⠿ Trage albumele pentru a le reordona":"⠿ Drag albums to reorder")
+            : `* ${lang==="ro"?"câmp obligatoriu":"required field"}`
+          }
+        </span>
         <button onClick={()=>{openAdd();setFormError("");}} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 22px",borderRadius:8,cursor:"pointer",fontWeight:600,fontSize:14,fontFamily:"inherit"}}>+ {addLabel}</button>
       </div>
       {showForm&&(
@@ -1424,9 +1503,21 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         </div>
       )}
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
-        {currentData.map(item=>(
-          <div key={item.id} style={{background:"white",borderRadius:10,padding:"16px 20px",boxShadow:"0 2px 8px rgba(0,0,0,0.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+        {currentData.map((item,idx)=>(
+          <div key={item.id}
+            draggable={tab==="gallery"}
+            onDragStart={tab==="gallery"?()=>handleDragStart(idx):undefined}
+            onDragOver={tab==="gallery"?(e)=>handleDragOver(e,idx):undefined}
+            onDrop={tab==="gallery"?()=>handleDrop(idx):undefined}
+            onDragEnd={()=>{setDragIdx(null);setDragOverIdx(null);}}
+            style={{background:"white",borderRadius:10,padding:"16px 20px",boxShadow:"0 2px 8px rgba(0,0,0,0.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12,
+              cursor:tab==="gallery"?"grab":"default",
+              opacity:dragIdx===idx?0.4:1,
+              border:dragOverIdx===idx&&dragIdx!==idx?`2px dashed ${GREEN_A}`:"2px solid transparent",
+              transition:"opacity 0.2s,border 0.15s"
+            }}>
             <div style={{display:"flex",alignItems:"center",gap:14}}>
+              {tab==="gallery"&&<span style={{fontSize:18,color:"#ccc",cursor:"grab",marginRight:4}} title="Trage pentru a reordona">⠿</span>}
               {tab==="gallery"&&item.cover_url&&<img src={item.cover_url} alt="" style={{width:56,height:40,objectFit:"cover",borderRadius:6}}/>}
               {(tab==="news"||tab==="research"||tab==="education")&&item.image_url&&<img src={item.image_url} alt="" style={{width:56,height:40,objectFit:"cover",borderRadius:6}}/>}
               <div>
@@ -1434,7 +1525,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
                 {tab==="members"&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.card_number} · {item.email}</div>}
                 {(tab==="news"||tab==="research"||tab==="education")&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.date}</div>}
                 {tab==="events"&&<div style={{display:"flex",alignItems:"center",gap:8,marginTop:4}}><span style={{background:item.status==="ongoing"?"#fff8e1":item.status==="past"?"#f0f0f0":GREEN_LIGHT_A,color:item.status==="ongoing"?"#f59e0b":item.status==="past"?"#666":GREEN_A,border:"1px solid",borderColor:item.status==="ongoing"?"#fcd34d":item.status==="past"?"#ccc":GREEN_ACCENT,borderRadius:20,padding:"2px 10px",fontSize:11,fontWeight:700}}>{item.status}</span><span style={{fontSize:12,color:"#888"}}>{item.date}</span></div>}
-                {tab==="gallery"&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.photos?.length||0} foto</div>}
+                {tab==="gallery"&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.photos?.length||0} foto · #{item.sort_order||idx+1}</div>}
               </div>
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -1571,11 +1662,12 @@ export default function App() {
   const [selectedNews,setSelectedNews] = useState(null);
   const [selectedEvent,setSelectedEvent] = useState(null);
   const [selectedArticle,setSelectedArticle] = useState(null);
+  const [selectedGalleryAlbum,setSelectedGalleryAlbum] = useState(null);
 
   useEffect(()=>{
     const load=async()=>{
       setLoading(true);
-      const[nd,ed,ad,md,pd,rd,edd,cd]=await Promise.all([db.get("news"),db.get("events"),db.get("albums"),db.get("members"),db.get("photos"),db.get("research"),db.get("education"),db.get("certificates")]);
+      const[nd,ed,ad,md,pd,rd,edd,cd]=await Promise.all([db.get("news"),db.get("events"),db.get("albums","&order=sort_order.asc"),db.get("members"),db.get("photos"),db.get("research"),db.get("education"),db.get("certificates")]);
       const aw=(ad||[]).map(a=>({...a,photos:(pd||[]).filter(p=>p.album_id===a.id)}));
       setNews(nd||[]);setEvents(ed||[]);setAlbums(aw);setMembers(md||[]);setResearch(rd||[]);setEducation(edd||[]);setCertificates(cd||[]);setLoading(false);
     };
@@ -1712,8 +1804,8 @@ export default function App() {
             {cp==="news"&&<NewsListPage news={news} setSelectedNews={setSelectedNews} setPage={setPage}/>}
             {cp==="newsDetail"&&<NewsDetailPage item={selectedNews} setPage={setPage}/>}
             {cp==="events"&&<EventsListPage events={events} setSelectedEvent={setSelectedEvent} setPage={setPage}/>}
-            {cp==="eventDetail"&&<EventDetailPage item={selectedEvent} setPage={setPage} albums={albums}/>}
-            {cp==="gallery"&&<GalleryPage albums={albums}/>}
+            {cp==="eventDetail"&&<EventDetailPage item={selectedEvent} setPage={setPage} albums={albums} setSelectedGalleryAlbum={setSelectedGalleryAlbum}/>}
+            {cp==="gallery"&&<GalleryPage albums={albums} initialAlbum={selectedGalleryAlbum} onAlbumOpen={()=>setSelectedGalleryAlbum(null)}/>}
             {cp==="research"&&<ArticleListPage items={research} type="research" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
             {cp==="researchDetail"&&<ArticleDetailPage item={selectedArticle} type="research" setPage={setPage}/>}
             {cp==="education"&&<ArticleListPage items={education} type="education" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
