@@ -1262,6 +1262,36 @@ function ProfilePage({certificates,events,accessToken}) {
               ))}
             </div>
           </div>
+          {/* Change Password */}
+          <div style={{background:"white",borderRadius:20,overflow:"hidden",boxShadow:"0 4px 24px rgba(0,0,0,0.07)",marginBottom:32}}>
+            <div style={{padding:"20px 32px",borderBottom:"1px solid #f0f0f0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <h3 style={{fontFamily:"Georgia,serif",fontSize:18,color:"#1a1a1a",margin:0}}>{lang==="ro"?"Schimbă Parola":"Change Password"}</h3>
+              <button onClick={()=>{setShowChangePw(!showChangePw);setPwError("");setPwSuccess(false);}} style={{background:showChangePw?RED_LIGHT:GREEN_LIGHT,color:showChangePw?RED:GREEN,border:`1px solid ${showChangePw?RED:GREEN}`,padding:"7px 16px",borderRadius:6,cursor:"pointer",fontSize:13,fontWeight:600,fontFamily:"inherit"}}>
+                {showChangePw?(lang==="ro"?"Anul":"Cancel"):(lang==="ro"?"Schimbă":"Change")}
+              </button>
+            </div>
+            {showChangePw&&(
+              <div style={{padding:"24px 32px",display:"flex",flexDirection:"column",gap:14}}>
+                {[["newPw",lang==="ro"?"Parolă nouă *":"New password *","password"],["confirm",lang==="ro"?"Confirmă parola nouă *":"Confirm new password *","password"]].map(([f,label,type])=>(
+                  <div key={f}>
+                    <label style={{display:"block",fontSize:13,fontWeight:600,color:"#555",marginBottom:6}}>{label}</label>
+                    <input value={pwForm[f]} onChange={e=>setPwForm(p=>({...p,[f]:e.target.value}))} type={type}
+                      style={{width:"100%",padding:"11px 14px",border:"1.5px solid #ddd",borderRadius:8,fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                      onFocus={e=>e.target.style.border=`1.5px solid ${GREEN}`}
+                      onBlur={e=>e.target.style.border="1.5px solid #ddd"}
+                    />
+                  </div>
+                ))}
+                {pwError&&<div style={{background:RED_LIGHT,color:RED,padding:"10px 14px",borderRadius:8,fontSize:13}}>{pwError}</div>}
+                {pwSuccess&&<div style={{background:GREEN_LIGHT,color:GREEN,padding:"10px 14px",borderRadius:8,fontSize:13,fontWeight:600}}>{lang==="ro"?"✅ Parola a fost schimbată cu succes!":"✅ Password changed successfully!"}</div>}
+                <button onClick={handleChangePw} style={{background:GREEN,color:"white",border:"none",padding:"12px 24px",borderRadius:50,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",alignSelf:"flex-start",boxShadow:`0 4px 16px rgba(26,107,74,0.3)`}}>
+                  {lang==="ro"?"Salvează Parola":"Save Password"}
+                </button>
+                <p style={{fontSize:12,color:"#aaa"}}>{lang==="ro"?"* Minimum 8 caractere":"* Minimum 8 characters"}</p>
+              </div>
+            )}
+          </div>
+
           <div>
             <h2 style={{fontFamily:"Georgia,serif",fontSize:22,color:"#1a1a1a",margin:"0 0 20px"}}>{t.certs}</h2>
             {userCerts.length===0?<p style={{color:"#888"}}>{t.noCerts}</p>:(
