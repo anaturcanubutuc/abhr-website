@@ -213,7 +213,7 @@ const T = {
       ]
     },
     stats:[{v:"120+",l:"Membri Activi",i:"👥",t:120},{v:"24",l:"Evenimente Organizate",i:"📅",t:24},{v:"48",l:"Articole Publicate",i:"📰",t:48},{v:"6+",l:"Ani de Activitate",i:"🏆",t:6}],
-    about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Advocacy",d:"Reprezentăm interesele pacienților la nivel național."}]},
+    about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Reprezentare",d:"Reprezentăm interesele pacienților la nivel național."}]},
     footer:"© 2025 Alianța pentru Boli Hepatice Rare. Toate drepturile rezervate.",
     contact:{
       title:"Contact",
@@ -221,7 +221,7 @@ const T = {
       email:"Email",
       phone:"Telefon",
       social:"Rețele Sociale",
-      emailVal:"contact@abhr.md",
+      emailVal:"alianta.abhr@gmail.com",
       phoneVal:"+373 79682161",
       facebookLabel:"Alianța pentru Boli Hepatice Rare din Moldova",
       address:"Republica Moldova",
@@ -230,7 +230,7 @@ const T = {
       followUs:"Urmăriți-ne",
     },
     loading:"Se încarcă...",
-    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment"}},
+    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",banner_image_url:"URL Imagine Banner (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment"}},
   },
   en:{
     orgName:"Alliance for Rare Hepatic Diseases",
@@ -262,7 +262,7 @@ const T = {
       email:"Email",
       phone:"Phone",
       social:"Social Media",
-      emailVal:"contact@abhr.md",
+      emailVal:"alianta.abhr@gmail.com",
       phoneVal:"+373 79682161",
       facebookLabel:"Alliance for Rare Hepatic Diseases from Moldova",
       address:"Republic of Moldova",
@@ -271,7 +271,7 @@ const T = {
       followUs:"Follow us",
     },
     loading:"Loading...",
-    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event"}},
+    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",banner_image_url:"Banner Image URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event"}},
   }
 };
 
@@ -610,7 +610,7 @@ function useCountUp(target,duration=1800,started=false) {
 }
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
-function HomePage({setPage,news,events,onMemberClick}) {
+function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelectedEvent}) {
   const {lang} = useLang();
   const {user} = useAuth();
   const t = T[lang];
@@ -724,14 +724,14 @@ function HomePage({setPage,news,events,onMemberClick}) {
             <PillBtn variant="outline" small onClick={()=>setPage("events")}>{t.home.allEvents}</PillBtn>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
-            {homeEvents.map(e=><ContentCard key={e.id} item={e} onClick={()=>setPage("events")} type="event"/>)}
+            {homeEvents.map(e=><ContentCard key={e.id} item={e} onClick={()=>{setSelectedEvent(e);setPage("eventDetail");}} type="event"/>)}
             {homeEvents.length===0&&<p style={{color:"#888"}}>{t.events.noEvents}</p>}
           </div>
         </div>
       </section>
 
-      {/* Member Banner */}
-      <section style={{padding:"100px 32px",background:"white"}}>
+      {/* Member Banner — hidden for logged-in members */}
+      {!user&&<section style={{padding:"100px 32px",background:"white"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,borderRadius:28,overflow:"hidden",position:"relative",display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:340}}>
             <WavyBg/>
@@ -754,7 +754,7 @@ function HomePage({setPage,news,events,onMemberClick}) {
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* FAQ */}
       <FAQSection/>
@@ -931,37 +931,42 @@ function EventDetailPage({item,setPage,albums,setSelectedGalleryAlbum}) {
   const linkedAlbum=albums.find(a=>a.id===item.album_id);
   return (
     <div style={{paddingTop:72}}>
-      <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`,padding:"60px 32px 80px",position:"relative",overflow:"hidden"}}>
-        <WavyBg/>
+      {/* Banner image if available */}
+      {item.banner_image_url && (
+        <div style={{width:"100%",maxHeight:420,overflow:"hidden",marginTop:72}}>
+          <img src={item.banner_image_url} alt={title} style={{width:"100%",height:420,objectFit:"cover"}}/>
+        </div>
+      )}
+      <div style={{background:item.banner_image_url?"white":`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`,padding:item.banner_image_url?"32px 32px 60px":"60px 32px 80px",position:"relative",overflow:"hidden",marginTop:item.banner_image_url?0:0}}>
+        {!item.banner_image_url&&<WavyBg/>}
         <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
           <BackBtn onClick={()=>setPage("events")} label={t.back}/>
           <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap",marginBottom:16}}>
-            <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,44px)",color:"white",margin:0,lineHeight:1.2}}>{title}</h1>
+            <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,44px)",color:item.banner_image_url?"#1a1a1a":"white",margin:0,lineHeight:1.2}}>{title}</h1>
             <StatusBadge status={item.status}/>
           </div>
           <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
-            <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📅 {item.date}</span>
-            <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📍 {location}</span>
+            <span style={{color:item.banner_image_url?"#555":"rgba(255,255,255,0.75)",fontSize:14}}>📅 {item.date}</span>
+            <span style={{color:item.banner_image_url?"#555":"rgba(255,255,255,0.75)",fontSize:14}}>📍 {location}</span>
           </div>
         </div>
-        <div style={{position:"absolute",bottom:-2,left:0,right:0}}>
+        {!item.banner_image_url&&<div style={{position:"absolute",bottom:-2,left:0,right:0}}>
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{display:"block",width:"100%",height:60}}><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8f9fa"/></svg>
-        </div>
+        </div>}
       </div>
       <div style={{background:"#f8f9fa",padding:"60px 32px"}}>
         <div style={{maxWidth:900,margin:"0 auto",display:"flex",flexDirection:"column",gap:24}}>
           {desc&&<div style={{background:"white",borderRadius:16,padding:36,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}><p style={{fontSize:16,lineHeight:1.9,color:"#333",margin:0,whiteSpace:"pre-wrap"}}>{desc}</p></div>}
           {item.agenda_url&&(
-            <div style={{background:"white",borderRadius:16,padding:28,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
-                <div style={{display:"flex",alignItems:"center",gap:14}}><span style={{fontSize:32}}>📄</span><div style={{fontWeight:700,color:"#1a1a1a",fontSize:16}}>{t.agenda}</div></div>
-                <a href={item.agenda_url} target="_blank" rel="noreferrer"><PillBtn small variant="dark">↓ Download</PillBtn></a>
+            <div style={{background:"white",borderRadius:16,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
+              <div style={{display:"flex",alignItems:"center",gap:14}}>
+                <span style={{fontSize:32}}>📄</span>
+                <div style={{fontWeight:700,color:"#1a1a1a",fontSize:16}}>{t.agenda}</div>
               </div>
-              <iframe
-                src={`https://docs.google.com/gview?url=${encodeURIComponent(item.agenda_url)}&embedded=true`}
-                style={{width:"100%",height:500,border:"none",borderRadius:10,background:"#f5f5f5"}}
-                title="Agenda"
-              />
+              <div style={{display:"flex",gap:10}}>
+                <a href={item.agenda_url} target="_blank" rel="noreferrer"><PillBtn small variant="outline">👁 {lang==="ro"?"Vezi":"View"}</PillBtn></a>
+                <a href={item.agenda_url} download target="_blank" rel="noreferrer"><PillBtn small variant="dark">↓ Download</PillBtn></a>
+              </div>
             </div>
           )}
           {item.speakers_image_url&&(
@@ -1279,7 +1284,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash};
     }
     if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||null,date:form.date||new Date().toISOString().slice(0,10)};
-    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
+    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",banner_image_url:form.banner_image_url||null,agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
     return{name_ro:form.albumNameRo||"",name_en:form.albumNameEn||"",cover_url:form.coverUrl||null};
   };
 
@@ -1367,7 +1372,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   const handleDeleteCert=async(id)=>{await db.delete("certificates",id);setCertificates(cs=>cs.filter(c=>c.id!==id));};
   const downloadCert=(cert)=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{const c=document.createElement("canvas");c.width=img.width;c.height=img.height;c.getContext("2d").drawImage(img,0,0);const a=document.createElement("a");a.download=`cert-${cert.member_id}.png`;a.href=c.toDataURL("image/png");a.click();};img.src=cert.image_url;};
 
-  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"]};
+  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"]};
   const fieldLabel=(f)=>t.fields[f]||f;
   const[currentData]=getData();
   const currentFields=FIELDS[tab]||[];
@@ -1497,9 +1502,9 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:28,marginBottom:28}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
             {currentFields.map(f=>{
-              const isImageField = f==="image_url"||f==="speakers_image_url"||f==="coverUrl"||f==="cert_image_url";
+              const isImageField = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="cert_image_url";
               const isPdfField = f==="agenda_url";
-              const isOptional = f==="image_url"||f==="speakers_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
+              const isOptional = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
               if(isImageField) return(
                 <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept="image/*" bucket="images" optional={isOptional}/>
               );
@@ -1635,15 +1640,7 @@ function ContactPage() {
                 </a>
               </div>
 
-              {/* Location */}
-              <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`, borderRadius:20, padding:40, position:"relative", overflow:"hidden"}}>
-                <WavyBg color="rgba(255,255,255,0.05)"/>
-                <div style={{position:"relative", zIndex:2}}>
-                  <div style={{fontSize:40, marginBottom:16}}>📍</div>
-                  <h3 style={{fontFamily:"Georgia,serif", fontSize:20, color:"white", margin:"0 0 8px"}}>{t.orgName||"ABHR"}</h3>
-                  <p style={{color:"rgba(255,255,255,0.7)", fontSize:15, margin:0}}>{t.address}</p>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -1847,7 +1844,7 @@ export default function App() {
           <MemberPanel open={panelOpen} onClose={()=>setPanelOpen(false)}/>
           {showNav&&<Navbar page={cp} setPage={setPage} onMemberClick={openPanel}/>}
           <div style={{flex:1}}>
-            {cp==="home"&&<HomePage setPage={setPage} news={news} events={events} onMemberClick={openPanel}/>}
+            {cp==="home"&&<HomePage setPage={setPage} news={news} events={events} onMemberClick={openPanel} setSelectedNews={setSelectedNews} setSelectedEvent={setSelectedEvent}/>}
             {cp==="about"&&<AboutPage onMemberClick={openPanel}/>}
             {cp==="news"&&<NewsListPage news={news} setSelectedNews={setSelectedNews} setPage={setPage}/>}
             {cp==="newsDetail"&&<NewsDetailPage item={selectedNews} setPage={setPage}/>}
