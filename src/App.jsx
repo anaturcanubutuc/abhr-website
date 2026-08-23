@@ -73,7 +73,12 @@ const db = makeDb(null);
 
 // ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
 const auth = {
-  async signIn(email, password) {
+  // Convert card number to internal email format
+  cardToEmail: (card) => `${card.toLowerCase().replace(/[^a-z0-9]/g,"")}@abhr.internal`,
+
+  async signIn(emailOrCard, password) {
+    // If it looks like a card number (not an email), convert it
+    const email = emailOrCard.includes("@") ? emailOrCard : auth.cardToEmail(emailOrCard);
     try {
       const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: "POST",
@@ -85,6 +90,7 @@ const auth = {
       return data; // contains access_token and user
     } catch { return null; }
   },
+
   async signOut(accessToken) {
     try {
       await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
@@ -92,6 +98,35 @@ const auth = {
         headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${accessToken}` },
       });
     } catch {}
+  },
+
+  async changePassword(accessToken, newPassword) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+        method: "PUT",
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      const data = await res.json();
+      return !data.error;
+    } catch { return false; }
+  },
+
+  async createMember(cardNumber, email, password) {
+    // Create a Supabase Auth user for a member
+    // Uses service role would be needed for admin creation
+    // Instead we use signUp which works with anon key
+    const authEmail = email || auth.cardToEmail(cardNumber);
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: authEmail, password }),
+      });
+      const data = await res.json();
+      if (data.error) return null;
+      return data.user; // contains id (auth_id)
+    } catch { return null; }
   }
 };
 
@@ -213,7 +248,7 @@ const T = {
     research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare"},
     education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație"},
     profile:{title:"Profilul Meu",name:"Nume",memberId:"Număr Membru",joinDate:"Data Înscrierii",email:"Email",certs:"Certificate de Participare",noCerts:"Nu există certificate.",download:"Descarcă PDF",view:"Vezi"},
-    login:{title:"Autentificare Membri",cardLabel:"Număr Card Membru / Email Admin",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
+    login:{title:"Autentificare Membri",cardLabel:"Număr Card / Email",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
     member:{title:"Solicită Cardul de Membru",subtitle:"Completați formularul și administratorul vă va contacta.",name:"Nume complet *",email:"Adresă email *",phone:"Număr de telefon",city:"Oraș / Localitate",message:"Mesaj sau informații suplimentare...",submit:"Trimite Cererea ↗",sent:"Cerere trimisă!",sentDesc:"Administratorul ABHR va procesa cererea și vă va contacta în curând.",again:"Trimite altă cerere",benefits:["Certificate de participare","Resurse educaționale exclusive","Comunitate de suport","Invitații la conferințe"],join:"Alătură-te Nouă",required:"* Câmpuri obligatorii."},
     faq:{title:"Întrebări Frecvente",subtitle:"Aveți întrebări despre ABHR?",desc:"Găsiți răspunsuri la cele mai frecvente întrebări despre organizația noastră.",notFound:"Nu găsiți răspunsul?",notFoundDesc:"Contactați-ne direct și vă vom răspunde în cel mai scurt timp.",contact:"Contactați-ne ↗",
       items:[
@@ -254,7 +289,7 @@ const T = {
     research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research"},
     education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education"},
     profile:{title:"My Profile",name:"Name",memberId:"Member Number",joinDate:"Join Date",email:"Email",certs:"Participation Certificates",noCerts:"No certificates available.",download:"Download PDF",view:"View"},
-    login:{title:"Member Login",cardLabel:"Member Card Number / Admin Email",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
+    login:{title:"Member Login",cardLabel:"Card Number / Email",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
     member:{title:"Request Member Card",subtitle:"Fill the form and the administrator will contact you.",name:"Full name *",email:"Email address *",phone:"Phone number",city:"City / Locality",message:"Message or additional information...",submit:"Send Request ↗",sent:"Request sent!",sentDesc:"The ABHR administrator will process your request and contact you soon.",again:"Send another request",benefits:["Participation certificates","Exclusive educational resources","Support community","Conference invitations"],join:"Join Us",required:"* Required fields."},
     faq:{title:"FAQ",subtitle:"Do you have questions about ABHR?",desc:"Find answers to the most frequently asked questions about our organization.",notFound:"Can't find the answer?",notFoundDesc:"Contact us directly and we will respond as soon as possible.",contact:"Contact us ↗",
       items:[
@@ -1146,7 +1181,7 @@ function LoginPage({setPage}) {
         </div>
         <div style={{marginBottom:18}}>
           <label style={{display:"block",marginBottom:6,fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.75)"}}>{t.cardLabel}</label>
-          <input value={card} onChange={e=>setCard(e.target.value)} placeholder={lang==="ro"?"Nr. card sau email admin":"Card number or admin email"}
+          <input value={card} onChange={e=>setCard(e.target.value)} placeholder={lang==="ro"?"Nr. card membru sau email":"Member card number or email"}
             style={{width:"100%",padding:"13px 16px",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,color:"white",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
             onFocus={e=>e.target.style.border=`1px solid ${GREEN_ACCENT}`} onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.15)"}
           />
@@ -1170,12 +1205,27 @@ function LoginPage({setPage}) {
 }
 
 // ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
-function ProfilePage({certificates,events}) {
+function ProfilePage({certificates,events,accessToken}) {
   const {lang} = useLang();
   const {user} = useAuth();
   const t = T[lang].profile;
   const [viewingCert,setViewingCert] = useState(null);
   const userCerts = certificates.filter(c=>c.member_id===user?.id);
+  const [showChangePw, setShowChangePw] = useState(false);
+  const [pwForm, setPwForm] = useState({current:"", newPw:"", confirm:""});
+  const [pwError, setPwError] = useState("");
+  const [pwSuccess, setPwSuccess] = useState(false);
+
+  const handleChangePw = async () => {
+    setPwError(""); setPwSuccess(false);
+    if(pwForm.newPw.length < 8){ setPwError(lang==="ro"?"Parola trebuie să aibă cel puțin 8 caractere.":"Password must be at least 8 characters."); return; }
+    if(pwForm.newPw !== pwForm.confirm){ setPwError(lang==="ro"?"Parolele nu coincid.":"Passwords do not match."); return; }
+    const token = user?.authToken || accessToken;
+    if(!token){ setPwError(lang==="ro"?"Sesiune expirată. Reconectați-vă.":"Session expired. Please log in again."); return; }
+    const ok = await auth.changePassword(token, pwForm.newPw);
+    if(ok){ setPwSuccess(true); setPwForm({current:"", newPw:"", confirm:""}); }
+    else setPwError(lang==="ro"?"Eroare la schimbarea parolei. Încercați din nou.":"Error changing password. Please try again.");
+  };
   const downloadCert = (cert,evTitle) => {
     const img=new Image();img.crossOrigin="anonymous";
     img.onload=()=>{const c=document.createElement("canvas");c.width=img.width;c.height=img.height;c.getContext("2d").drawImage(img,0,0);const a=document.createElement("a");a.download=`certificat-${evTitle||"participare"}.png`;a.href=c.toDataURL("image/png");a.click();};
@@ -1292,10 +1342,9 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     if(tab==="members"){
       let password_hash = form.password_hash;
       if(form.password) {
-        // We'll hash async before save - store temporarily
         password_hash = "__PENDING__" + form.password;
       }
-      return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash};
+      return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash,auth_id:form.auth_id||null};
     }
     if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||null,date:form.date||new Date().toISOString().slice(0,10)};
     if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",banner_image_url:form.banner_image_url||null,agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
@@ -1322,10 +1371,15 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     setSaving(true);
     const[data,setter,tableName]=getData();
     let payload=buildPayload();
-    // Resolve async password hash for members
+    // Resolve async password hash and create Supabase Auth user for members
     if(tab==="members"&&payload.password_hash?.startsWith("__PENDING__")){
       const plainPw = payload.password_hash.replace("__PENDING__","");
       payload.password_hash = await hashPasswordAsync(plainPw);
+      // Create Supabase Auth account if this is a new member
+      if(!editItem && payload.card_number) {
+        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw);
+        if(authUser) payload.auth_id = authUser.id;
+      }
     }
     const tname=tableName==="gallery"?"albums":tableName;
     try{
@@ -1874,7 +1928,7 @@ export default function App() {
             {cp==="education"&&<ArticleListPage items={education} type="education" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
             {cp==="contact"&&<ContactPage/>}
             {cp==="educationDetail"&&<ArticleDetailPage item={selectedArticle} type="education" setPage={setPage}/>}
-            {cp==="profile"&&<ProfilePage certificates={certificates} events={events}/>}
+            {cp==="profile"&&<ProfilePage certificates={certificates} events={events} accessToken={accessToken}/>}
             {cp==="login"&&<LoginPage setPage={setPage}/>}
             {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} authedDb={authedDb} authedStorage={makeStorage(accessToken)}/>}
           </div>
