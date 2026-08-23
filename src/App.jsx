@@ -931,31 +931,30 @@ function EventDetailPage({item,setPage,albums,setSelectedGalleryAlbum}) {
   const linkedAlbum=albums.find(a=>a.id===item.album_id);
   return (
     <div style={{paddingTop:72}}>
-      {/* Banner image if available */}
-      {item.banner_image_url && (
-        <div style={{width:"100%",maxHeight:420,overflow:"hidden",marginTop:72}}>
-          <img src={item.banner_image_url} alt={title} style={{width:"100%",height:420,objectFit:"cover"}}/>
-        </div>
-      )}
-      <div style={{background:item.banner_image_url?"white":`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`,padding:item.banner_image_url?"32px 32px 60px":"60px 32px 80px",position:"relative",overflow:"hidden",marginTop:item.banner_image_url?0:0}}>
-        {!item.banner_image_url&&<WavyBg/>}
+      <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID})`,padding:"60px 32px 80px",position:"relative",overflow:"hidden"}}>
+        <WavyBg/>
         <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
           <BackBtn onClick={()=>setPage("events")} label={t.back}/>
           <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap",marginBottom:16}}>
-            <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,44px)",color:item.banner_image_url?"#1a1a1a":"white",margin:0,lineHeight:1.2}}>{title}</h1>
+            <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,44px)",color:"white",margin:0,lineHeight:1.2}}>{title}</h1>
             <StatusBadge status={item.status}/>
           </div>
           <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
-            <span style={{color:item.banner_image_url?"#555":"rgba(255,255,255,0.75)",fontSize:14}}>📅 {item.date}</span>
-            <span style={{color:item.banner_image_url?"#555":"rgba(255,255,255,0.75)",fontSize:14}}>📍 {location}</span>
+            <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📅 {item.date}</span>
+            <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📍 {location}</span>
           </div>
         </div>
-        {!item.banner_image_url&&<div style={{position:"absolute",bottom:-2,left:0,right:0}}>
+        <div style={{position:"absolute",bottom:-2,left:0,right:0}}>
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{display:"block",width:"100%",height:60}}><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8f9fa"/></svg>
-        </div>}
+        </div>
       </div>
       <div style={{background:"#f8f9fa",padding:"60px 32px"}}>
         <div style={{maxWidth:900,margin:"0 auto",display:"flex",flexDirection:"column",gap:24}}>
+          {item.banner_image_url&&(
+            <div style={{borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.08)"}}>
+              <img src={item.banner_image_url} alt={title} style={{width:"100%",display:"block",maxHeight:600,objectFit:"contain",background:"#f8f9fa"}}/>
+            </div>
+          )}
           {desc&&<div style={{background:"white",borderRadius:16,padding:36,boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}><p style={{fontSize:16,lineHeight:1.9,color:"#333",margin:0,whiteSpace:"pre-wrap"}}>{desc}</p></div>}
           {item.agenda_url&&(
             <div style={{background:"white",borderRadius:16,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
@@ -1214,7 +1213,7 @@ function ProfilePage({certificates,events}) {
                         <div style={{display:"flex",alignItems:"center",gap:14}}>
                           <img src={cert.image_url} alt="" style={{width:80,height:56,objectFit:"cover",borderRadius:8}}/>
                           <div>
-                            <div style={{fontWeight:700,fontSize:15,color:"#1a1a1a"}}>🏅 {t.view}</div>
+                            <div style={{fontSize:22}}>🏅</div>
                             <div style={{fontSize:13,color:"#888",marginTop:3}}>{evTitle}</div>
                           </div>
                         </div>
