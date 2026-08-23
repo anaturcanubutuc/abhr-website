@@ -49,20 +49,27 @@ const DEMO_DATA = {
   photos:[{id:"p1",album_id:"a1",url:IMG.photo1,caption_ro:"Deschiderea conferinței",caption_en:"Conference opening"},{id:"p2",album_id:"a1",url:IMG.photo2,caption_ro:"Sesiune medicală",caption_en:"Medical session"}],
 };
 
-const db = {
-  async get(table,extra=""){
-    try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?order=created_at.desc${extra}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`},signal:AbortSignal.timeout(5000)});if(!r.ok)throw new Error();return r.json();}catch{return DEMO_DATA[table]||[];}
-  },
-  async insert(table,data){
-    try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});return r.json();}catch{return[{...data,id:Date.now().toString(),created_at:new Date().toISOString()}];}
-  },
-  async update(table,id,data){
-    try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{method:"PATCH",headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});return r.json();}catch{return[data];}
-  },
-  async delete(table,id){
-    try{await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{method:"DELETE",headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});}catch{}
-  }
+// db factory — pass accessToken for admin writes, falls back to anon key for public reads
+const makeDb = (accessToken) => {
+  const authHeader = accessToken ? `Bearer ${accessToken}` : `Bearer ${SUPABASE_KEY}`;
+  return {
+    async get(table,extra=""){
+      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?order=created_at.desc${extra}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`},signal:AbortSignal.timeout(5000)});if(!r.ok)throw new Error();return r.json();}catch{return DEMO_DATA[table]||[];}
+    },
+    async insert(table,data){
+      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:authHeader,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});if(!r.ok){const e=await r.json();throw new Error(e.message);}return r.json();}catch(e){console.error("DB insert error:",e);return[{...data,id:Date.now().toString(),created_at:new Date().toISOString()}];}
+    },
+    async update(table,id,data){
+      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{method:"PATCH",headers:{apikey:SUPABASE_KEY,Authorization:authHeader,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});if(!r.ok){const e=await r.json();throw new Error(e.message);}return r.json();}catch(e){console.error("DB update error:",e);return[data];}
+    },
+    async delete(table,id){
+      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{method:"DELETE",headers:{apikey:SUPABASE_KEY,Authorization:authHeader}});if(!r.ok){const e=await r.json();throw new Error(e.message);}}catch(e){console.error("DB delete error:",e);}
+    }
+  };
 };
+
+// Public db instance (read-only for public data)
+const db = makeDb(null);
 
 // ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
 const auth = {
@@ -89,41 +96,46 @@ const auth = {
 };
 
 // ─── STORAGE UPLOAD ───────────────────────────────────────────────────────────
-const storage = {
-  async upload(bucket, file) {
-    try {
-      const ext = file.name.split(".").pop();
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
-        method: "POST",
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": file.type },
-        body: file,
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
-    } catch (e) {
-      console.error("Storage upload error:", e);
-      return null;
+const makeStorage = (accessToken) => {
+  const authHeader = accessToken ? `Bearer ${accessToken}` : `Bearer ${SUPABASE_KEY}`;
+  return {
+    async upload(bucket, file) {
+      try {
+        const ext = file.name.split(".").pop();
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+          method: "POST",
+          headers: { apikey: SUPABASE_KEY, Authorization: authHeader, "Content-Type": file.type },
+          body: file,
+        });
+        if (!res.ok) throw new Error("Upload failed");
+        return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+      } catch (e) {
+        console.error("Storage upload error:", e);
+        return null;
+      }
+    },
+    async remove(bucket, url) {
+      try {
+        const path = url.split(`/object/public/${bucket}/`)[1];
+        if (!path) return;
+        await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+          method: "DELETE",
+          headers: { apikey: SUPABASE_KEY, Authorization: authHeader },
+        });
+      } catch (e) { console.error("Storage delete error:", e); }
     }
-  },
-  async remove(bucket, url) {
-    try {
-      const path = url.split(`/object/public/${bucket}/`)[1];
-      if (!path) return;
-      await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
-        method: "DELETE",
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-      });
-    } catch (e) { console.error("Storage delete error:", e); }
-  }
+  };
 };
+const storage = makeStorage(null);
 
 // ─── FILE UPLOAD FIELD COMPONENT ──────────────────────────────────────────────
-function FileUploadField({ label, value, onChange, accept, bucket, optional, multiple=false, onMultiple }) {
+function FileUploadField({ label, value, onChange, accept, bucket, optional, multiple=false, onMultiple, storageInstance }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [preview, setPreview] = useState(value || "");
   const inputRef = useRef(null);
+  const st = storageInstance || storage;
 
   const handleFile = async (e) => {
     const files = Array.from(e.target.files);
@@ -135,7 +147,7 @@ function FileUploadField({ label, value, onChange, accept, bucket, optional, mul
       const urls = [];
       for (let i = 0; i < files.length; i++) {
         setUploadProgress(`Se încarcă ${i+1} din ${files.length}...`);
-        const url = await storage.upload(bucket, files[i]);
+        const url = await st.upload(bucket, files[i]);
         if (url) urls.push({ url, name: files[i].name });
       }
       setUploading(false);
@@ -143,7 +155,7 @@ function FileUploadField({ label, value, onChange, accept, bucket, optional, mul
       if (urls.length > 0) onMultiple(urls);
     } else {
       const file = files[0];
-      const url = await storage.upload(bucket, file);
+      const url = await st.upload(bucket, file);
       setUploading(false);
       if (url) { setPreview(url); onChange(url); }
       else alert("Upload failed. Please try again.");
@@ -1242,7 +1254,10 @@ function ProfilePage({certificates,events}) {
 
 
 // ─── ADMIN PANEL (unchanged functional style) ─────────────────────────────────
-function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates}) {
+function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates,authedDb,authedStorage}) {
+  // Use authedDb for all admin writes, fall back to db if not available
+  const adb = authedDb || db;
+  const ast = authedStorage || storage;
   const {lang} = useLang();
   const t = T[lang].admin;
   const GREEN_A="#1a6b4a",RED_A="#c0392b",GREEN_LIGHT_A="#e8f5ee",RED_LIGHT_A="#fdf0ee";
@@ -1314,15 +1329,15 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     }
     const tname=tableName==="gallery"?"albums":tableName;
     try{
-      if(editItem){await db.update(tname,editItem.id,payload);setter(arr=>arr.map(x=>x.id===editItem.id?{...x,...payload}:x));}
-      else{const res=await db.insert(tname,payload);const ni=res[0]||{...payload,id:Date.now().toString(),created_at:new Date().toISOString()};if(tab==="gallery")setter(arr=>[{...ni,photos:[],...arr}]);else setter(arr=>[ni,...arr]);}
+      if(editItem){await adb.update(tname,editItem.id,payload);setter(arr=>arr.map(x=>x.id===editItem.id?{...x,...payload}:x));}
+      else{const res=await adb.insert(tname,payload);const ni=res[0]||{...payload,id:Date.now().toString(),created_at:new Date().toISOString()};if(tab==="gallery")setter(arr=>[{...ni,photos:[],...arr}]);else setter(arr=>[ni,...arr]);}
     }catch(e){console.error(e);}
     setSaving(false);closeForm();
   };
 
   const handleDelete=async(id)=>{
     const[,setter,tableName]=getData();const tname=tableName==="gallery"?"albums":tableName;
-    await db.delete(tname,id);setter(arr=>arr.filter(x=>x.id!==id));
+    await adb.delete(tname,id);setter(arr=>arr.filter(x=>x.id!==id));
   };
 
   // Drag-and-drop album reordering
@@ -1342,21 +1357,21 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     setDragIdx(null); setDragOverIdx(null);
     // Persist to Supabase
     for(const a of updated){
-      await db.update("albums", a.id, {sort_order: a.sort_order});
+      await adb.update("albums", a.id, {sort_order: a.sort_order});
     }
   };
 
   const handleAddPhoto=async()=>{
     if(!photoForm.photoUrl)return;
     const payload={album_id:photoAlbum.id,url:photoForm.photoUrl,caption_ro:photoForm.captionRo||"",caption_en:photoForm.captionEn||""};
-    const res=await db.insert("photos",payload);const np=res[0]||{...payload,id:Date.now().toString()};
+    const res=await adb.insert("photos",payload);const np=res[0]||{...payload,id:Date.now().toString()};
     setAlbums(as=>as.map(a=>a.id===photoAlbum.id?{...a,photos:[...(a.photos||[]),np]}:a));
     setPhotoAlbum(prev=>({...prev,photos:[...(prev.photos||[]),np]}));
     setPhotoForm({});setShowPhotoForm(false);
   };
 
   const handleDeletePhoto=async(photoId)=>{
-    await db.delete("photos",photoId);
+    await adb.delete("photos",photoId);
     setAlbums(as=>as.map(a=>a.id===photoAlbum.id?{...a,photos:a.photos.filter(p=>p.id!==photoId)}:a));
     setPhotoAlbum(prev=>({...prev,photos:prev.photos.filter(p=>p.id!==photoId)}));
   };
@@ -1364,11 +1379,11 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   const handleAddCert=async()=>{
     if(!certForm.event_id||!certForm.cert_image_url)return;
     const payload={member_id:certMember.id,event_id:certForm.event_id,image_url:certForm.cert_image_url};
-    const res=await db.insert("certificates",payload);const nc=res[0]||{...payload,id:Date.now().toString()};
+    const res=await adb.insert("certificates",payload);const nc=res[0]||{...payload,id:Date.now().toString()};
     setCertificates(cs=>[nc,...cs]);setCertForm({});setShowCertForm(false);
   };
 
-  const handleDeleteCert=async(id)=>{await db.delete("certificates",id);setCertificates(cs=>cs.filter(c=>c.id!==id));};
+  const handleDeleteCert=async(id)=>{await adb.delete("certificates",id);setCertificates(cs=>cs.filter(c=>c.id!==id));};
   const downloadCert=(cert)=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{const c=document.createElement("canvas");c.width=img.width;c.height=img.height;c.getContext("2d").drawImage(img,0,0);const a=document.createElement("a");a.download=`cert-${cert.member_id}.png`;a.href=c.toDataURL("image/png");a.click();};img.src=cert.image_url;};
 
   const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"]};
@@ -1397,7 +1412,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
                   {events.map(ev=><option key={ev.id} value={ev.id}>{lang==="ro"?ev.title_ro:ev.title_en}</option>)}
                 </select>
               </div>
-              <FileUploadField label={t.fields.cert_image_url||"Certificat"} value={certForm.cert_image_url||""} onChange={v=>setCertForm(p=>({...p,cert_image_url:v}))} accept="image/*" bucket="images"/>
+              <FileUploadField label={t.fields.cert_image_url||"Certificat"} value={certForm.cert_image_url||""} onChange={v=>setCertForm(p=>({...p,cert_image_url:v}))} accept="image/*" bucket="images" storageInstance={ast}/>
             </div>
             <div style={{display:"flex",gap:10,marginTop:16}}>
               <button onClick={handleAddCert} style={{background:GREEN_A,color:"white",border:"none",padding:"10px 24px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"inherit"}}>{t.save}</button>
@@ -1448,10 +1463,11 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
                 accept="image/*"
                 bucket="images"
                 multiple={true}
+                storageInstance={ast}
                 onMultiple={async(files)=>{
                   for(const f of files){
                     const payload={album_id:photoAlbum.id,url:f.url,caption_ro:"",caption_en:""};
-                    const res=await db.insert("photos",payload);
+                    const res=await adb.insert("photos",payload);
                     const np=res[0]||{...payload,id:Date.now().toString()+Math.random()};
                     setAlbums(as=>as.map(a=>a.id===photoAlbum.id?{...a,photos:[...(a.photos||[]),np]}:a));
                     setPhotoAlbum(prev=>({...prev,photos:[...(prev.photos||[]),np]}));
@@ -1505,10 +1521,10 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
               const isPdfField = f==="agenda_url";
               const isOptional = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
               if(isImageField) return(
-                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept="image/*" bucket="images" optional={isOptional}/>
+                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept="image/*" bucket="images" optional={isOptional} storageInstance={ast}/>
               );
               if(isPdfField) return(
-                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept=".pdf,application/pdf" bucket="documents" optional={true}/>
+                <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept=".pdf,application/pdf" bucket="documents" optional={true} storageInstance={ast}/>
               );
               return(
                 <div key={f}>
@@ -1773,6 +1789,9 @@ export default function App() {
 
   const openPanel=()=>setPanelOpen(true);
 
+  // Authenticated db instance for admin writes
+  const authedDb = makeDb(accessToken);
+
   if(loading) return(
     <div style={{minHeight:"100vh",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa"}}>
       <style>{`
@@ -1857,7 +1876,7 @@ export default function App() {
             {cp==="educationDetail"&&<ArticleDetailPage item={selectedArticle} type="education" setPage={setPage}/>}
             {cp==="profile"&&<ProfilePage certificates={certificates} events={events}/>}
             {cp==="login"&&<LoginPage setPage={setPage}/>}
-            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates}/>}
+            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} authedDb={authedDb} authedStorage={makeStorage(accessToken)}/>}
           </div>
           {showFooter&&<Footer setPage={setPage}/>}
         </div>
