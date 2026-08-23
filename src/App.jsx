@@ -645,7 +645,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
           <div style={{maxWidth:680}}>
 
             <h1 style={{margin:"0 0 28px",lineHeight:1.1,fontFamily:"Georgia,serif"}}>
-              {(lang==="ro"?["Cercetăm.","Susținem.","Ne implicăm."]:["We Research.","We Support.","We Engage."]).map((w,i)=>(
+              {(lang==="ro"?["Cercetăm.","Susținem.","Ne implicăm."]:["Research.","Support.","Engage."]).map((w,i)=>(
                 <span key={w} style={{display:"block",fontSize:"clamp(42px,6vw,80px)",fontWeight:700,color:i===2?GREEN_ACCENT:"white",opacity:visible?1:0,transform:visible?"translateX(0)":"translateX(-40px)",transition:`all 0.7s ease ${0.2+i*0.15}s`}}>{w}</span>
               ))}
             </h1>
@@ -711,7 +711,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
             <PillBtn variant="outline" small onClick={()=>setPage("news")}>{t.home.allNews}</PillBtn>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
-            {news.slice(0,2).map(n=><ContentCard key={n.id} item={n} onClick={()=>{}} type="news"/>)}
+            {news.slice(0,2).map(n=><ContentCard key={n.id} item={n} onClick={()=>{setSelectedNews(n);setPage("newsDetail");}} type="news"/>)}
           </div>
         </div>
       </section>
