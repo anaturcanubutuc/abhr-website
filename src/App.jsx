@@ -108,8 +108,9 @@ const auth = {
         body: JSON.stringify({ password: newPassword }),
       });
       const data = await res.json();
-      return !data.error;
-    } catch { return false; }
+      console.log("changePassword response:", res.status, data);
+      return res.ok && !data.error;
+    } catch(e) { console.error("changePassword error:", e); return false; }
   },
 
   async createMember(cardNumber, email, password, adminToken, memberId) {
@@ -1234,16 +1235,11 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
     // Try all available token sources
     const sessionToken = sessionStorage.getItem("abhr_token");
     const token = user?.authToken || accessToken || sessionToken;
-    console.log("Change pw - user.authToken:", user?.authToken ? "exists" : "null");
-    console.log("Change pw - accessToken prop:", accessToken ? "exists" : "null");
-    console.log("Change pw - sessionStorage token:", sessionToken ? "exists" : "null");
-    console.log("Change pw - final token:", token ? token.slice(0,20)+"..." : "NULL");
     if(!token){
       setPwError(lang==="ro"?"Sesiune expirată. Deconectați-vă și reconectați-vă, apoi încercați din nou.":"Session expired. Please log out, log back in, and try again.");
       return;
     }
     const ok = await auth.changePassword(token, pwForm.newPw);
-    console.log("Change pw result:", ok);
     if(ok){
       setPwSuccess(true);
       setPwForm({current:"", newPw:"", confirm:""});
@@ -1871,7 +1867,6 @@ export default function App() {
     }
     // Member login via Supabase Auth (card number)
     const result = await auth.signIn(cardNumber, password);
-    console.log("Auth result:", result ? {id: result.user?.id, hasToken: !!result.access_token} : "failed");
     if(result?.user) {
       // Always save token immediately
       sessionStorage.setItem("abhr_token", result.access_token);
@@ -1880,7 +1875,6 @@ export default function App() {
       try {
         const memberDb = makeDb(result.access_token);
         const memberData = await memberDb.get("members", "&auth_id=eq." + result.user.id);
-        console.log("Member data from DB:", memberData?.length, "records");
         if(memberData?.[0]) {
           const member = {...memberData[0], authToken: result.access_token};
           setUser(member);
@@ -1890,7 +1884,6 @@ export default function App() {
       } catch(e) { console.error("Member DB error:", e); }
       // Fallback: find member in local cache by card number
       const memberByCard = members.find(m => m.card_number === cardNumber);
-      console.log("Local fallback member:", memberByCard?.name || "not found");
       if(memberByCard) {
         const member = {...memberByCard, authToken: result.access_token};
         setUser(member);
@@ -1899,7 +1892,6 @@ export default function App() {
       }
     }
     // Legacy fallback: SHA-256 or base64 password check
-    console.log("Trying legacy login...");
     const sha256Hash = await hashPasswordAsync(password);
     let member = members.find(m=>m.card_number===cardNumber&&m.password_hash===sha256Hash);
     if(!member) member = members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
