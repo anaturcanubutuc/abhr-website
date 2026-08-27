@@ -1815,7 +1815,9 @@ class ErrorBoundary extends React.Component {
 export default function App() {
   const [lang,setLang] = useState("ro");
   const [page,setPage] = useState("home");
-  const [user,setUser] = useState(null);
+  const [user,setUser] = useState(()=>{
+    try{ const u=sessionStorage.getItem("abhr_user"); return u?JSON.parse(u):null; }catch{ return null; }
+  });
   const [panelOpen,setPanelOpen] = useState(false);
   const [news,setNews] = useState([]);
   const [events,setEvents] = useState([]);
@@ -1858,7 +1860,7 @@ export default function App() {
     const sha256Hash = await hashPasswordAsync(password);
     let member = members.find(m=>m.card_number===cardNumber&&m.password_hash===sha256Hash);
     if(!member) member = members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
-    if(member){setUser(member);return member;}
+    if(member){setUser(member);sessionStorage.setItem("abhr_user",JSON.stringify(member));return member;}
     return null;
   };
   const logout=async()=>{
@@ -1866,6 +1868,7 @@ export default function App() {
     setUser(null);
     setAccessToken(null);
     sessionStorage.removeItem("abhr_token");
+    sessionStorage.removeItem("abhr_user");
     setPage("home");
   };
 
