@@ -1341,7 +1341,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   // Use authedDb for all admin writes, fall back to db if not available
   const adb = authedDb || db;
   const ast = authedStorage || storage;
-  const accessTokenRef = accessToken;
+
   const {lang} = useLang();
   const t = T[lang].admin;
   const GREEN_A="#1a6b4a",RED_A="#c0392b",GREEN_LIGHT_A="#e8f5ee",RED_LIGHT_A="#fdf0ee";
@@ -1411,12 +1411,11 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       payload.password_hash = await hashPasswordAsync(plainPw);
       // Create Supabase Auth account if this is a new member
       if(!editItem && payload.card_number) {
-        const adminToken = authedDb?._token || (authedStorage?._token);
-        // Get access token from the authed db instance
-        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw, accessTokenRef);
+        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw, accessToken);
         if(authUser?.id) {
           payload.auth_id = authUser.id;
-          console.log("Created auth user:", authUser.id);
+        } else {
+          console.error("Failed to create Supabase Auth user for member");
         }
       }
     }
