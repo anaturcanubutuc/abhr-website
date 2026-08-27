@@ -1850,18 +1850,56 @@ export default function App() {
   const [accessToken, setAccessToken] = useState(()=>sessionStorage.getItem("abhr_token")||null);
 
   const login=async(cardNumber,password)=>{
-    // Check if it looks like an email (admin login via Supabase Auth)
+    // Admin login via email
     if(cardNumber.includes("@")) {
       const result = await auth.signIn(cardNumber, password);
-      if(result && result.user?.id === ADMIN_UUID) {
+      if(result?.user?.id === ADMIN_UUID) {
         const u={email:cardNumber, name:"Administrator", isAdmin:true};
         setUser(u);
         setAccessToken(result.access_token);
+        sessionStorage.setItem("abhr_token", result.access_token);
+        sessionStorage.setItem("abhr_user", JSON.stringify(u));
+        // Reload members with admin token
+        try {
+          const adminDb = makeDb(result.access_token);
+          const freshMembers = await adminDb.get("members");
+          if(freshMembers?.length >= 0) setMembers(freshMembers);
+        } catch(e) { console.error("Failed to reload members:", e); }
         return u;
       }
       return null;
     }
-    // Member login via card number
+    // Member login via Supabase Auth (card number)
+    const result = await auth.signIn(cardNumber, password);
+    console.log("Auth result:", result ? {id: result.user?.id, hasToken: !!result.access_token} : "failed");
+    if(result?.user) {
+      // Always save token immediately
+      sessionStorage.setItem("abhr_token", result.access_token);
+      setAccessToken(result.access_token);
+      // Try to fetch member record using auth token
+      try {
+        const memberDb = makeDb(result.access_token);
+        const memberData = await memberDb.get("members", "&auth_id=eq." + result.user.id);
+        console.log("Member data from DB:", memberData?.length, "records");
+        if(memberData?.[0]) {
+          const member = {...memberData[0], authToken: result.access_token};
+          setUser(member);
+          sessionStorage.setItem("abhr_user", JSON.stringify(member));
+          return member;
+        }
+      } catch(e) { console.error("Member DB error:", e); }
+      // Fallback: find member in local cache by card number
+      const memberByCard = members.find(m => m.card_number === cardNumber);
+      console.log("Local fallback member:", memberByCard?.name || "not found");
+      if(memberByCard) {
+        const member = {...memberByCard, authToken: result.access_token};
+        setUser(member);
+        sessionStorage.setItem("abhr_user", JSON.stringify(member));
+        return member;
+      }
+    }
+    // Legacy fallback: SHA-256 or base64 password check
+    console.log("Trying legacy login...");
     const sha256Hash = await hashPasswordAsync(password);
     let member = members.find(m=>m.card_number===cardNumber&&m.password_hash===sha256Hash);
     if(!member) member = members.find(m=>m.card_number===cardNumber&&m.password_hash===hashPassword(password));
