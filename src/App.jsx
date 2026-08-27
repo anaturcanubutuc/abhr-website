@@ -112,13 +112,13 @@ const auth = {
     } catch { return false; }
   },
 
-  async createMember(cardNumber, email, password, adminToken) {
+  async createMember(cardNumber, email, password, adminToken, memberId) {
     try {
       // Call serverless function — keeps service key off the client
       const res = await fetch("/api/create-member", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardNumber, email, password, adminToken }),
+        body: JSON.stringify({ cardNumber, email, password, adminToken, memberId }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -1428,7 +1428,9 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       payload.password_hash = await hashPasswordAsync(plainPw);
       // Create Supabase Auth account if this is a new member
       if(!editItem && payload.card_number) {
-        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw, accessToken);
+        // First insert the member record to get the ID, then create auth user
+        // auth_id will be updated by the serverless function directly
+        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw, accessToken, null);
         if(authUser?.id) {
           payload.auth_id = authUser.id;
         } else {
@@ -1439,7 +1441,18 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     const tname=tableName==="gallery"?"albums":tableName;
     try{
       if(editItem){await adb.update(tname,editItem.id,payload);setter(arr=>arr.map(x=>x.id===editItem.id?{...x,...payload}:x));}
-      else{const res=await adb.insert(tname,payload);const ni=res[0]||{...payload,id:Date.now().toString(),created_at:new Date().toISOString()};if(tab==="gallery")setter(arr=>[{...ni,photos:[],...arr}]);else setter(arr=>[ni,...arr]);}
+      else{
+        const res=await adb.insert(tname,payload);
+        const ni=res[0]||{...payload,id:Date.now().toString(),created_at:new Date().toISOString()};
+        if(tab==="gallery")setter(arr=>[{...ni,photos:[],...arr}]);
+        else setter(arr=>[ni,...arr]);
+        // For members: now that we have the member ID, update auth_id via serverless
+        if(tab==="members" && ni.id && payload.auth_id) {
+          // auth_id already set in payload, serverless already updated it
+          // Update local state with auth_id
+          setter(arr=>arr.map(x=>x.id===ni.id?{...x,auth_id:payload.auth_id}:x));
+        }
+      }
     }catch(e){console.error(e);}
     setSaving(false);closeForm();
   };
