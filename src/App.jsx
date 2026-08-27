@@ -112,21 +112,24 @@ const auth = {
     } catch { return false; }
   },
 
-  async createMember(cardNumber, email, password) {
-    // Create a Supabase Auth user for a member
-    // Uses service role would be needed for admin creation
-    // Instead we use signUp which works with anon key
-    const authEmail = email || auth.cardToEmail(cardNumber);
+  async createMember(cardNumber, email, password, adminToken) {
     try {
-      const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      // Call serverless function — keeps service key off the client
+      const res = await fetch("/api/create-member", {
         method: "POST",
-        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ email: authEmail, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardNumber, email, password, adminToken }),
       });
       const data = await res.json();
-      if (data.error) return null;
-      return data.user; // contains id (auth_id)
-    } catch { return null; }
+      if (!res.ok || data.error) {
+        console.error("createMember error:", data.error);
+        return null;
+      }
+      return data; // contains id (auth_id)
+    } catch(e) {
+      console.error("createMember error:", e);
+      return null;
+    }
   }
 };
 
@@ -1334,10 +1337,11 @@ function ProfilePage({certificates,events,accessToken}) {
 
 
 // ─── ADMIN PANEL (unchanged functional style) ─────────────────────────────────
-function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates,authedDb,authedStorage}) {
+function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates,authedDb,authedStorage,accessToken}) {
   // Use authedDb for all admin writes, fall back to db if not available
   const adb = authedDb || db;
   const ast = authedStorage || storage;
+  const accessTokenRef = accessToken;
   const {lang} = useLang();
   const t = T[lang].admin;
   const GREEN_A="#1a6b4a",RED_A="#c0392b",GREEN_LIGHT_A="#e8f5ee",RED_LIGHT_A="#fdf0ee";
@@ -1407,8 +1411,13 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       payload.password_hash = await hashPasswordAsync(plainPw);
       // Create Supabase Auth account if this is a new member
       if(!editItem && payload.card_number) {
-        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw);
-        if(authUser) payload.auth_id = authUser.id;
+        const adminToken = authedDb?._token || (authedStorage?._token);
+        // Get access token from the authed db instance
+        const authUser = await auth.createMember(payload.card_number, payload.email, plainPw, accessTokenRef);
+        if(authUser?.id) {
+          payload.auth_id = authUser.id;
+          console.log("Created auth user:", authUser.id);
+        }
       }
     }
     const tname=tableName==="gallery"?"albums":tableName;
@@ -1960,7 +1969,7 @@ export default function App() {
             {cp==="educationDetail"&&<ArticleDetailPage item={selectedArticle} type="education" setPage={setPage}/>}
             {cp==="profile"&&<ProfilePage certificates={certificates} events={events} accessToken={accessToken}/>}
             {cp==="login"&&<LoginPage setPage={setPage}/>}
-            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} authedDb={authedDb} authedStorage={makeStorage(accessToken)}/>}
+            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} authedDb={authedDb} authedStorage={makeStorage(accessToken)} accessToken={accessToken}/>}
           </div>
           {showFooter&&<Footer setPage={setPage}/>}
         </div>
