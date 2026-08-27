@@ -1214,9 +1214,11 @@ function LoginPage({setPage}) {
 }
 
 // ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
-function ProfilePage({certificates,events,accessToken}) {
+function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
   const {lang} = useLang();
   const {user} = useAuth();
+  // Use prop or fall back to user's stored token
+  const accessToken = accessTokenProp || user?.authToken;
   const t = T[lang].profile;
   const [viewingCert,setViewingCert] = useState(null);
   const userCerts = certificates.filter(c=>c.member_id===user?.id);
@@ -1229,11 +1231,20 @@ function ProfilePage({certificates,events,accessToken}) {
     setPwError(""); setPwSuccess(false);
     if(pwForm.newPw.length < 8){ setPwError(lang==="ro"?"Parola trebuie să aibă cel puțin 8 caractere.":"Password must be at least 8 characters."); return; }
     if(pwForm.newPw !== pwForm.confirm){ setPwError(lang==="ro"?"Parolele nu coincid.":"Passwords do not match."); return; }
+    // Try all available token sources
     const token = user?.authToken || accessToken;
-    if(!token){ setPwError(lang==="ro"?"Sesiune expirată. Reconectați-vă.":"Session expired. Please log in again."); return; }
+    if(!token){
+      setPwError(lang==="ro"?"Sesiune expirată. Deconectați-vă și reconectați-vă, apoi încercați din nou.":"Session expired. Please log out, log back in, and try again.");
+      return;
+    }
     const ok = await auth.changePassword(token, pwForm.newPw);
-    if(ok){ setPwSuccess(true); setPwForm({current:"", newPw:"", confirm:""}); }
-    else setPwError(lang==="ro"?"Eroare la schimbarea parolei. Încercați din nou.":"Error changing password. Please try again.");
+    if(ok){
+      setPwSuccess(true);
+      setPwForm({current:"", newPw:"", confirm:""});
+      // Update the stored authToken with fresh token after password change
+    } else {
+      setPwError(lang==="ro"?"Eroare la schimbarea parolei. Deconectați-vă și reconectați-vă, apoi încercați din nou.":"Error changing password. Please log out, log back in, and try again.");
+    }
   };
   const downloadCert = (cert,evTitle) => {
     const img=new Image();img.crossOrigin="anonymous";
