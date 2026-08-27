@@ -108,7 +108,6 @@ const auth = {
         body: JSON.stringify({ password: newPassword }),
       });
       const data = await res.json();
-      console.log("changePassword response:", res.status, data);
       return res.ok && !data.error;
     } catch(e) { console.error("changePassword error:", e); return false; }
   },
@@ -1231,6 +1230,8 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
   const handleChangePw = async () => {
     setPwError(""); setPwSuccess(false);
     if(pwForm.newPw.length < 8){ setPwError(lang==="ro"?"Parola trebuie să aibă cel puțin 8 caractere.":"Password must be at least 8 characters."); return; }
+    if(!/[a-zA-Z]/.test(pwForm.newPw)){ setPwError(lang==="ro"?"Parola trebuie să conțină cel puțin o literă.":"Password must contain at least one letter."); return; }
+    if(!/[0-9]/.test(pwForm.newPw)){ setPwError(lang==="ro"?"Parola trebuie să conțină cel puțin o cifră.":"Password must contain at least one number."); return; }
     if(pwForm.newPw !== pwForm.confirm){ setPwError(lang==="ro"?"Parolele nu coincid.":"Passwords do not match."); return; }
     // Try all available token sources
     const sessionToken = sessionStorage.getItem("abhr_token");
@@ -1308,7 +1309,7 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
                 <button onClick={handleChangePw} style={{background:GREEN,color:"white",border:"none",padding:"12px 24px",borderRadius:50,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",alignSelf:"flex-start",boxShadow:`0 4px 16px rgba(26,107,74,0.3)`}}>
                   {lang==="ro"?"Salvează Parola":"Save Password"}
                 </button>
-                <p style={{fontSize:12,color:"#aaa"}}>{lang==="ro"?"* Minimum 8 caractere":"* Minimum 8 characters"}</p>
+                <p style={{fontSize:12,color:"#aaa"}}>{lang==="ro"?"* Minimum 8 caractere, cel puțin o literă și o cifră":"* Minimum 8 characters, at least one letter and one number"}</p>
               </div>
             )}
           </div>
@@ -1416,6 +1417,11 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     }
     if(tab==="members"){
       if(!form.name?.trim()||!form.card_number?.trim()){setFormError(lang==="ro"?"Numele și numărul de card sunt obligatorii.":"Name and card number are required.");return;}
+      if(form.password){
+        if(form.password.length < 8){setFormError(lang==="ro"?"Parola trebuie să aibă cel puțin 8 caractere.":"Password must be at least 8 characters.");return;}
+        if(!/[a-zA-Z]/.test(form.password)){setFormError(lang==="ro"?"Parola trebuie să conțină cel puțin o literă.":"Password must contain at least one letter.");return;}
+        if(!/[0-9]/.test(form.password)){setFormError(lang==="ro"?"Parola trebuie să conțină cel puțin o cifră.":"Password must contain at least one number.");return;}
+      }
     }
     if(tab==="gallery"){
       if(!form.albumNameRo?.trim()||!form.albumNameEn?.trim()){setFormError(lang==="ro"?"Numele albumului (RO și EN) este obligatoriu.":"Album name (RO and EN) is required.");return;}
