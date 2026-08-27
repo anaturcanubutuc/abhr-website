@@ -54,7 +54,7 @@ const makeDb = (accessToken) => {
   const authHeader = accessToken ? `Bearer ${accessToken}` : `Bearer ${SUPABASE_KEY}`;
   return {
     async get(table,extra=""){
-      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?order=created_at.desc${extra}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`},signal:AbortSignal.timeout(5000)});if(!r.ok)throw new Error();return r.json();}catch{return DEMO_DATA[table]||[];}
+      try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?order=created_at.desc${extra}`,{headers:{apikey:SUPABASE_KEY,Authorization:authHeader},signal:AbortSignal.timeout(5000)});if(!r.ok)throw new Error();return r.json();}catch{return DEMO_DATA[table]||[];}
     },
     async insert(table,data){
       try{const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:authHeader,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});if(!r.ok){const e=await r.json();throw new Error(e.message);}return r.json();}catch(e){console.error("DB insert error:",e);return[{...data,id:Date.now().toString(),created_at:new Date().toISOString()}];}
