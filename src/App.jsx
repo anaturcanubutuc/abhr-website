@@ -1840,7 +1840,7 @@ export default function App() {
     load();
   },[]);
 
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(()=>sessionStorage.getItem("abhr_token")||null);
 
   const login=async(cardNumber,password)=>{
     // Check if it looks like an email (admin login via Supabase Auth)
@@ -1865,6 +1865,7 @@ export default function App() {
     if(accessToken) await auth.signOut(accessToken);
     setUser(null);
     setAccessToken(null);
+    sessionStorage.removeItem("abhr_token");
     setPage("home");
   };
 
