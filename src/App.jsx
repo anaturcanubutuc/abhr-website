@@ -251,7 +251,7 @@ const T = {
     research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare"},
     education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație"},
     profile:{title:"Profilul Meu",name:"Nume",memberId:"Număr Membru",joinDate:"Data Înscrierii",email:"Email",certs:"Certificate de Participare",noCerts:"Nu există certificate.",download:"Descarcă PDF",view:"Vezi"},
-    login:{title:"Autentificare Membri",cardLabel:"Număr Card / Email",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
+    login:{title:"Autentificare Membri",cardLabel:"Număr Card Membru",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
     member:{title:"Solicită Cardul de Membru",subtitle:"Completați formularul și administratorul vă va contacta.",name:"Nume complet *",email:"Adresă email *",phone:"Număr de telefon",city:"Oraș / Localitate",message:"Mesaj sau informații suplimentare...",submit:"Trimite Cererea ↗",sent:"Cerere trimisă!",sentDesc:"Administratorul ABHR va procesa cererea și vă va contacta în curând.",again:"Trimite altă cerere",benefits:["Certificate de participare","Resurse educaționale exclusive","Comunitate de suport","Invitații la conferințe"],join:"Alătură-te Nouă",required:"* Câmpuri obligatorii."},
     faq:{title:"Întrebări Frecvente",subtitle:"Aveți întrebări despre ABHR?",desc:"Găsiți răspunsuri la cele mai frecvente întrebări despre organizația noastră.",notFound:"Nu găsiți răspunsul?",notFoundDesc:"Contactați-ne direct și vă vom răspunde în cel mai scurt timp.",contact:"Contactați-ne ↗",
       items:[
@@ -292,7 +292,7 @@ const T = {
     research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research"},
     education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education"},
     profile:{title:"My Profile",name:"Name",memberId:"Member Number",joinDate:"Join Date",email:"Email",certs:"Participation Certificates",noCerts:"No certificates available.",download:"Download PDF",view:"View"},
-    login:{title:"Member Login",cardLabel:"Card Number / Email",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
+    login:{title:"Member Login",cardLabel:"Member Card Number",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
     member:{title:"Request Member Card",subtitle:"Fill the form and the administrator will contact you.",name:"Full name *",email:"Email address *",phone:"Phone number",city:"City / Locality",message:"Message or additional information...",submit:"Send Request ↗",sent:"Request sent!",sentDesc:"The ABHR administrator will process your request and contact you soon.",again:"Send another request",benefits:["Participation certificates","Exclusive educational resources","Support community","Conference invitations"],join:"Join Us",required:"* Required fields."},
     faq:{title:"FAQ",subtitle:"Do you have questions about ABHR?",desc:"Find answers to the most frequently asked questions about our organization.",notFound:"Can't find the answer?",notFoundDesc:"Contact us directly and we will respond as soon as possible.",contact:"Contact us ↗",
       items:[
@@ -1184,7 +1184,7 @@ function LoginPage({setPage}) {
         </div>
         <div style={{marginBottom:18}}>
           <label style={{display:"block",marginBottom:6,fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.75)"}}>{t.cardLabel}</label>
-          <input value={card} onChange={e=>setCard(e.target.value)} placeholder={lang==="ro"?"Nr. card membru sau email":"Member card number or email"}
+          <input value={card} onChange={e=>setCard(e.target.value)} placeholder="ABHR-001"
             style={{width:"100%",padding:"13px 16px",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,color:"white",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
             onFocus={e=>e.target.style.border=`1px solid ${GREEN_ACCENT}`} onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.15)"}
           />
@@ -1202,6 +1202,12 @@ function LoginPage({setPage}) {
           {loading?"...":t.btn+" ↗"}
         </button>
         <p style={{textAlign:"center",fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:20}}>{t.forgot}</p>
+        <p style={{textAlign:"center",fontSize:12,color:"rgba(255,255,255,0.35)",marginTop:8}}>
+          {lang==="ro"?"Ați uitat numărul cardului? ":"Forgot your card number? "}
+          <a href="mailto:alianta.abhr@gmail.com" style={{color:GREEN_ACCENT,textDecoration:"none"}}>
+            {lang==="ro"?"Contactați-ne":"Contact us"}
+          </a>
+        </p>
       </div>
     </div>
   );
