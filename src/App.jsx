@@ -1232,16 +1232,21 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
     if(pwForm.newPw.length < 8){ setPwError(lang==="ro"?"Parola trebuie să aibă cel puțin 8 caractere.":"Password must be at least 8 characters."); return; }
     if(pwForm.newPw !== pwForm.confirm){ setPwError(lang==="ro"?"Parolele nu coincid.":"Passwords do not match."); return; }
     // Try all available token sources
-    const token = user?.authToken || accessToken;
+    const sessionToken = sessionStorage.getItem("abhr_token");
+    const token = user?.authToken || accessToken || sessionToken;
+    console.log("Change pw - user.authToken:", user?.authToken ? "exists" : "null");
+    console.log("Change pw - accessToken prop:", accessToken ? "exists" : "null");
+    console.log("Change pw - sessionStorage token:", sessionToken ? "exists" : "null");
+    console.log("Change pw - final token:", token ? token.slice(0,20)+"..." : "NULL");
     if(!token){
       setPwError(lang==="ro"?"Sesiune expirată. Deconectați-vă și reconectați-vă, apoi încercați din nou.":"Session expired. Please log out, log back in, and try again.");
       return;
     }
     const ok = await auth.changePassword(token, pwForm.newPw);
+    console.log("Change pw result:", ok);
     if(ok){
       setPwSuccess(true);
       setPwForm({current:"", newPw:"", confirm:""});
-      // Update the stored authToken with fresh token after password change
     } else {
       setPwError(lang==="ro"?"Eroare la schimbarea parolei. Deconectați-vă și reconectați-vă, apoi încercați din nou.":"Error changing password. Please log out, log back in, and try again.");
     }
