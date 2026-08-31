@@ -1861,12 +1861,16 @@ export default function App() {
         setAccessToken(result.access_token);
         sessionStorage.setItem("abhr_token", result.access_token);
         sessionStorage.setItem("abhr_user", JSON.stringify(u));
-        // Reload members with admin token
+        // Reload protected data with admin token
         try {
           const adminDb = makeDb(result.access_token);
-          const freshMembers = await adminDb.get("members");
+          const [freshMembers, freshCerts] = await Promise.all([
+            adminDb.get("members"),
+            adminDb.get("certificates"),
+          ]);
           if(freshMembers?.length >= 0) setMembers(freshMembers);
-        } catch(e) { console.error("Failed to reload members:", e); }
+          if(freshCerts?.length >= 0) setCertificates(freshCerts);
+        } catch(e) { console.error("Failed to reload protected data:", e); }
         return u;
       }
       return null;
