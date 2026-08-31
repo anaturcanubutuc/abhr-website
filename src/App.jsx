@@ -339,7 +339,7 @@ function WavyBg({color="rgba(255,255,255,0.06)"}) {
 
 function PageHero({title, subtitle, dark=false}) {
   return (
-    <section style={{background:dark?`linear-gradient(145deg,${PURE_GREEN_DARK},${PURE_GREEN_MID})`:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,padding:"120px 32px 80px",position:"relative",overflow:"hidden",marginTop:0}}>
+    <section style={{background:dark?`linear-gradient(145deg,${PURE_GREEN_DARK},${PURE_GREEN_MID})`:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,padding:"clamp(80px,15vw,120px) clamp(16px,4vw,32px) 80px",position:"relative",overflow:"hidden",marginTop:0}}>
       <WavyBg/>
       <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
         <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(32px,5vw,60px)",color:"white",margin:"0 0 16px",fontWeight:700,lineHeight:1.1}}>{title}</h1>
@@ -619,7 +619,7 @@ function Footer({setPage}) {
     <footer style={{background:GREEN_DARK,padding:"64px 32px 32px",position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px)`,backgroundSize:"40px 40px",pointerEvents:"none"}}/>
       <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
-        <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:48,marginBottom:48}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:32,marginBottom:48}}>
           <div>
             <div style={{marginBottom:20}}><ABHRLogo size={48} white horizontal/></div>
             <p style={{color:"rgba(255,255,255,0.55)",fontSize:14,lineHeight:1.8,maxWidth:280}}>{t.home.sub}</p>
@@ -728,9 +728,9 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       </section>
 
       {/* About */}
-      <section style={{background:"#f8f9fa",padding:"100px 32px"}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:80,alignItems:"center"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:48,alignItems:"center"}}>
             <div>
               <SectionLabel>{t.about.label}</SectionLabel>
               <h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:"#1a1a1a",margin:"0 0 24px",lineHeight:1.2}}>{t.about.title}</h2>
@@ -754,7 +754,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       </section>
 
       {/* News */}
-      <section style={{background:"white",padding:"100px 32px"}}>
+      <section style={{background:"white",padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:48,flexWrap:"wrap",gap:20}}>
             <div><SectionLabel>{t.home.recentNews}</SectionLabel><h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(26px,3.5vw,40px)",color:"#1a1a1a",margin:0,lineHeight:1.2}}>{t.home.newsSubtitle}</h2></div>
@@ -767,7 +767,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       </section>
 
       {/* Events */}
-      <section style={{background:"#f8f9fa",padding:"100px 32px"}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:48,flexWrap:"wrap",gap:20}}>
             <div><SectionLabel>{t.home.upcomingEvents}</SectionLabel><h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(26px,3.5vw,40px)",color:"#1a1a1a",margin:0,lineHeight:1.2}}>{t.home.eventsSubtitle}</h2></div>
@@ -781,9 +781,9 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       </section>
 
       {/* Member Banner — hidden for logged-in members */}
-      {!user&&<section style={{padding:"100px 32px",background:"white"}}>
+      {!user&&<section style={{padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)",background:"white"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,borderRadius:28,overflow:"hidden",position:"relative",display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:340}}>
+          <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,borderRadius:28,overflow:"hidden",position:"relative",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",minHeight:340}}>
             <WavyBg/>
             <div style={{position:"absolute",top:24,right:24,color:"rgba(255,255,255,0.12)",fontSize:48}}>✦</div>
             <div style={{padding:"64px 56px",position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center"}}>
@@ -817,11 +817,11 @@ function FAQSection() {
   const t = T[lang].faq;
   const [open,setOpen] = useState(0);
   return (
-    <section style={{background:`linear-gradient(145deg,${PURE_GREEN_DARK},${PURE_GREEN_MID},#1e7a52)`,padding:"100px 32px",position:"relative",overflow:"hidden"}}>
+    <section style={{background:`linear-gradient(145deg,${PURE_GREEN_DARK},${PURE_GREEN_MID},#1e7a52)`,padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)",position:"relative",overflow:"hidden"}}>
       <WavyBg color="rgba(255,255,255,0.04)"/>
       <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)`,backgroundSize:"60px 60px",pointerEvents:"none"}}/>
       <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1.4fr",gap:80,alignItems:"start"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:48,alignItems:"start"}}>
           <div>
             <SectionLabel>{t.title}</SectionLabel>
             <h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(28px,3.5vw,44px)",color:"white",margin:"0 0 24px",lineHeight:1.2}}>{t.subtitle}</h2>
@@ -865,7 +865,7 @@ function AboutPage({onMemberClick}) {
   return (
     <div>
       <PageHero title={t.about.label} subtitle={t.about.body}/>
-      <section style={{background:"#f8f9fa",padding:"80px 32px"}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:24}}>
             {t.about.features.map(f=>(
@@ -881,7 +881,7 @@ function AboutPage({onMemberClick}) {
           </div>
         </div>
       </section>
-      <section style={{background:"white",padding:"80px 32px",textAlign:"center"}}>
+      <section style={{background:"white",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",textAlign:"center"}}>
         <div style={{maxWidth:600,margin:"0 auto"}}>
           <SectionLabel>{t.member.join}</SectionLabel>
           <h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(26px,4vw,40px)",color:"#1a1a1a",margin:"0 0 20px"}}>{t.nav.member}</h2>
@@ -901,7 +901,7 @@ function NewsListPage({news,setSelectedNews,setPage}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle}/>
-      <section style={{background:"#f8f9fa",padding:"80px 32px",minHeight:400}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {news.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noNews}</p>}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
@@ -922,7 +922,7 @@ function NewsDetailPage({item,setPage}) {
   return (
     <div style={{paddingTop:72}}>
       {item.image_url&&<div style={{width:"100%",maxHeight:480,overflow:"hidden"}}><img src={item.image_url} alt={title} style={{width:"100%",height:480,objectFit:"cover"}}/></div>}
-      <div style={{maxWidth:800,margin:"0 auto",padding:"60px 32px"}}>
+      <div style={{maxWidth:800,margin:"0 auto",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
         <BackBtn onClick={()=>setPage("news")} label={t.back}/>
         <div style={{fontSize:12,color:"#999",marginBottom:12,fontWeight:600,letterSpacing:1}}>{item.date}</div>
         <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,40px)",color:"#1a1a1a",margin:"0 0 32px",lineHeight:1.2}}>{title}</h1>
@@ -940,7 +940,7 @@ function EventsListPage({events,setSelectedEvent,setPage}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle} dark/>
-      <section style={{background:"#f8f9fa",padding:"80px 32px",minHeight:400}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {ordered.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noEvents}</p>}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:28}}>
@@ -998,7 +998,7 @@ function EventDetailPage({item,setPage,albums,setSelectedGalleryAlbum}) {
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{display:"block",width:"100%",height:60}}><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8f9fa"/></svg>
         </div>
       </div>
-      <div style={{background:"#f8f9fa",padding:"60px 32px"}}>
+      <div style={{background:"#f8f9fa",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:900,margin:"0 auto",display:"flex",flexDirection:"column",gap:24}}>
           {item.banner_image_url&&(
             <div style={{borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.08)"}}>
@@ -1071,7 +1071,7 @@ function GalleryPage({albums, initialAlbum=null, onAlbumOpen}) {
     return (
       <div>
         <PageHero title={lang==="ro"?selectedAlbum.name_ro:selectedAlbum.name_en} subtitle=""/>
-        <section style={{background:"#f8f9fa",padding:"60px 32px"}}>
+        <section style={{background:"#f8f9fa",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
           <div style={{maxWidth:1200,margin:"0 auto"}}>
             <BackBtn onClick={()=>setSelectedAlbum(null)} label={t.back}/>
             {photos.length===0&&<p style={{color:"#888"}}>{t.noPhotos}</p>}
@@ -1095,7 +1095,7 @@ function GalleryPage({albums, initialAlbum=null, onAlbumOpen}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle}/>
-      <section style={{background:"#f8f9fa",padding:"80px 32px"}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {albums.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noPhotos}</p>}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:28}}>
@@ -1127,7 +1127,7 @@ function ArticleListPage({items,type,setSelectedArticle,setPage}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle} dark={type==="research"}/>
-      <section style={{background:"#f8f9fa",padding:"80px 32px",minHeight:400}}>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {items.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noPosts}</p>}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
@@ -1148,7 +1148,7 @@ function ArticleDetailPage({item,type,setPage}) {
   return (
     <div style={{paddingTop:72}}>
       {item.image_url&&<div style={{width:"100%",maxHeight:480,overflow:"hidden"}}><img src={item.image_url} alt={title} style={{width:"100%",height:480,objectFit:"cover"}}/></div>}
-      <div style={{maxWidth:800,margin:"0 auto",padding:"60px 32px"}}>
+      <div style={{maxWidth:800,margin:"0 auto",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
         <BackBtn onClick={()=>setPage(type)} label={t.back}/>
         <div style={{fontSize:12,color:"#999",marginBottom:12,fontWeight:600,letterSpacing:1}}>{item.date}</div>
         <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,40px)",color:"#1a1a1a",margin:"0 0 32px",lineHeight:1.2}}>{title}</h1>
@@ -1256,7 +1256,7 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
   const getEventTitle=(eventId)=>{const ev=events.find(e=>e.id===eventId);if(!ev)return eventId;return lang==="ro"?ev.title_ro:ev.title_en;};
   return (
     <div>
-      <div style={{background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,padding:"120px 32px 80px",position:"relative",overflow:"hidden"}}>
+      <div style={{background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,padding:"clamp(80px,15vw,120px) clamp(16px,4vw,32px) 80px",position:"relative",overflow:"hidden"}}>
         <WavyBg/>
         <div style={{maxWidth:800,margin:"0 auto",position:"relative",zIndex:2,display:"flex",alignItems:"center",gap:28}}>
           <div style={{width:88,height:88,borderRadius:"50%",background:"rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,color:"white",fontWeight:700,border:"3px solid rgba(255,255,255,0.3)",flexShrink:0}}>{user?.name?.[0]||"M"}</div>
@@ -1269,7 +1269,7 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{display:"block",width:"100%",height:60}}><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8f9fa"/></svg>
         </div>
       </div>
-      <div style={{background:"#f8f9fa",padding:"60px 32px"}}>
+      <div style={{background:"#f8f9fa",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:800,margin:"0 auto",display:"flex",flexDirection:"column",gap:32}}>
           <div style={{background:"white",borderRadius:20,overflow:"hidden",boxShadow:"0 4px 24px rgba(0,0,0,0.07)"}}>
             <div style={{padding:"28px 32px",borderBottom:"1px solid #f0f0f0"}}>
@@ -1737,7 +1737,7 @@ function ContactPage() {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle}/>
-      <section style={{background:"#f8f9fa", padding:"80px 32px"}}>
+      <section style={{background:"#f8f9fa", padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1000, margin:"0 auto"}}>
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:40}}>
 
@@ -1973,7 +1973,7 @@ export default function App() {
         <div className="sk" style={{width:120,height:36,borderRadius:50}}/>
       </div>
       {/* Skeleton Hero */}
-      <div style={{background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,minHeight:480,padding:"80px 32px",display:"flex",alignItems:"center"}}>
+      <div style={{background:`linear-gradient(145deg,${GREEN_DARK},${GREEN_MID})`,minHeight:480,padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",display:"flex",alignItems:"center"}}>
         <div style={{maxWidth:1200,margin:"0 auto",width:"100%"}}>
           <div style={{maxWidth:600,display:"flex",flexDirection:"column",gap:20}}>
             <div style={{width:180,height:14,background:"rgba(255,255,255,0.15)",borderRadius:50}}/>
@@ -2025,7 +2025,25 @@ export default function App() {
     <LangContext.Provider value={{lang,setLang}}>
       <AuthContext.Provider value={{user,login,logout}}>
         <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa"}}>
-          <style>{`*{box-sizing:border-box;margin:0;padding:0}body{overflow-x:hidden}::placeholder{color:rgba(255,255,255,0.35)!important}input[type="date"]{color:#333!important}input[type="date"]::placeholder{color:#aaa!important}`}</style>
+          <style>{`
+            *{box-sizing:border-box;margin:0;padding:0}
+            body{overflow-x:hidden}
+            ::placeholder{color:rgba(255,255,255,0.35)!important}
+            input[type="date"]{color:#333!important}
+            input[type="date"]::placeholder{color:#aaa!important}
+            @media(max-width:768px){
+              /* Footer grid */
+              footer > div > div:first-child > div[style*="grid"] { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+              /* Stats bar */
+              div[style*="repeat(4,1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
+              /* About section grid */
+              div[style*="1fr 1.4fr"] { grid-template-columns: 1fr !important; }
+              div[style*="1fr 1fr"] { grid-template-columns: 1fr !important; }
+              div[style*="2fr 1fr"] { grid-template-columns: 1fr !important; }
+              div[style*="1fr 2fr"] { grid-template-columns: 1fr !important; }
+            }
+          `}</style>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
           <MemberPanel open={panelOpen} onClose={()=>setPanelOpen(false)}/>
           {showNav&&<Navbar page={cp} setPage={setPage} onMemberClick={openPanel}/>}
           <div style={{flex:1}}>
