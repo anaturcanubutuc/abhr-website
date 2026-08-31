@@ -716,9 +716,9 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       {/* Stats */}
       <section ref={statsRef} style={{background:`linear-gradient(90deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,padding:"56px 32px",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 20% 50%,rgba(255,255,255,0.05) 0%,transparent 60%),radial-gradient(circle at 80% 50%,rgba(255,255,255,0.05) 0%,transparent 60%)",pointerEvents:"none"}}/>
-        <div style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0,position:"relative",zIndex:2}}>
+        <div style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:0,position:"relative",zIndex:2}}>
           {t.stats.map((s,i)=>(
-            <div key={s.l} style={{textAlign:"center",padding:"16px 24px",borderRight:i<3?"1px solid rgba(255,255,255,0.15)":"none"}}>
+            <div key={s.l} style={{textAlign:"center",padding:"16px 24px",borderRight:"none",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
               <div style={{fontSize:36,marginBottom:8}}>{s.i}</div>
               <div style={{fontSize:"clamp(36px,4vw,56px)",fontWeight:800,color:"white",fontFamily:"Georgia,serif",lineHeight:1}}>{counts[i]}{s.v.includes("+")?"+":" "}</div>
               <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",marginTop:10,fontWeight:500,letterSpacing:0.5}}>{s.l}</div>
