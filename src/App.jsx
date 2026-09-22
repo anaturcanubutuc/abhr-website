@@ -264,11 +264,7 @@ const T = {
     },
     stats:[{v:"120+",l:"Membri Activi",i:"👥",t:120},{v:"24",l:"Evenimente Organizate",i:"📅",t:24},{v:"48",l:"Articole Publicate",i:"📰",t:48},{v:"6+",l:"Ani de Activitate",i:"🏆",t:6}],
     about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",
-    extended:"Bolile hepatice rare reprezintă un domeniu în continuă schimbare. Progresele în genetică și diagnostic molecular, dezvoltarea registrelor internaționale, identificarea unor noi biomarkeri și apariția terapiilor țintite schimbă treptat modul în care aceste boli sunt diagnosticate, monitorizate și tratate.
-
-Pentru bolile rare, colaborarea este esențială. Numărul redus de pacienți cu o anumită afecțiune face ca cercetarea relevantă să depășească adesea granițele unui singur centru sau ale unei singure țări. Registrele de pacienți, studiile multicentrice și rețelele internaționale permit reunirea experienței și generarea unor date care pot fi transferate în practica medicală.
-
-Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cercetării în îngrijirea pacientului și conectarea specialiștilor din Republica Moldova la inițiativele și rețelele europene dedicate bolilor hepatice rare.",
+    extendedParagraphs:["Bolile hepatice rare reprezintă un domeniu în continuă schimbare. Progresele în genetică și diagnostic molecular, dezvoltarea registrelor internaționale, identificarea unor noi biomarkeri și apariția terapiilor țintite schimbă treptat modul în care aceste boli sunt diagnosticate, monitorizate și tratate.","Pentru bolile rare, colaborarea este esențială. Numărul redus de pacienți cu o anumită afecțiune face ca cercetarea relevantă să depășească adesea granițele unui singur centru sau ale unei singure țări. Registrele de pacienți, studiile multicentrice și rețelele internaționale permit reunirea experienței și generarea unor date care pot fi transferate în practica medicală.","Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cercetării în îngrijirea pacientului și conectarea specialiștilor din Republica Moldova la inițiativele și rețelele europene dedicate bolilor hepatice rare."],
     features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Reprezentare",d:"Reprezentăm interesele pacienților la nivel național."}]},
     footer:"© 2025 Alianța pentru Boli Hepatice Rare. Toate drepturile rezervate.",
     links:{
@@ -339,11 +335,7 @@ Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cer
     },
     stats:[{v:"120+",l:"Active Members",i:"👥",t:120},{v:"24",l:"Events Organized",i:"📅",t:24},{v:"48",l:"Articles Published",i:"📰",t:48},{v:"6+",l:"Years of Activity",i:"🏆",t:6}],
     about:{label:"About Us",title:"Together for hepatic health in Moldova",body:"ABHR is an organization dedicated to supporting patients with rare liver diseases and their families. We are committed to providing information, resources and support to our community.",cta:"Read More ↗",
-    extended:"Rare liver diseases represent a constantly evolving field. Advances in genetics and molecular diagnostics, the development of international registries, the identification of new biomarkers and the emergence of targeted therapies are gradually changing the way these diseases are diagnosed, monitored and treated.
-
-For rare diseases, collaboration is essential. The small number of patients with a given condition means that relevant research often transcends the boundaries of a single center or country. Patient registries, multicenter studies and international networks allow experience to be pooled and data to be generated that can be transferred into medical practice.
-
-The Alliance for Rare Hepatic Diseases from the Republic of Moldova supports the integration of research into patient care and the connection of specialists from the Republic of Moldova to European initiatives and networks dedicated to rare hepatic diseases.",
+    extendedParagraphs:["Rare liver diseases represent a constantly evolving field. Advances in genetics and molecular diagnostics, the development of international registries, the identification of new biomarkers and the emergence of targeted therapies are gradually changing the way these diseases are diagnosed, monitored and treated.","For rare diseases, collaboration is essential. The small number of patients with a given condition means that relevant research often transcends the boundaries of a single center or country. Patient registries, multicenter studies and international networks allow experience to be pooled and data to be generated that can be transferred into medical practice.","The Alliance for Rare Hepatic Diseases from the Republic of Moldova supports the integration of research into patient care and the connection of specialists from the Republic of Moldova to European initiatives and networks dedicated to rare hepatic diseases."],
     features:[{icon:"🔬",t:"Medical Research",d:"We support research in rare liver diseases in Moldova."},{icon:"🤝",t:"Community Support",d:"We provide emotional and practical support to patients and families."},{icon:"📚",t:"Education & Information",d:"We publish educational resources for patients and professionals."},{icon:"🌍",t:"Advocacy",d:"We represent patient interests at the national level."}]},
     footer:"© 2025 Alliance for Rare Hepatic Diseases. All rights reserved.",
     links:{
@@ -945,7 +937,7 @@ function AboutPage({onMemberClick}) {
       {/* Extended text section */}
       <section style={{background:"white",padding:"clamp(40px,6vw,72px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
-          {t.about.extended.split("\n\n").map((para,i)=>(
+          {(t.about.extendedParagraphs||[]).map((para,i)=>(
             <p key={i} style={{fontSize:16,lineHeight:1.9,color:"#444",marginBottom:i<2?24:0}}>{para}</p>
           ))}
         </div>
