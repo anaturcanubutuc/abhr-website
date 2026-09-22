@@ -249,12 +249,14 @@ const T = {
     events:{title:"Evenimente",subtitle:"Evenimente și activități organizate de ABHR",noEvents:"Nu există evenimente.",back:"← Înapoi la Evenimente",ongoing:"În desfășurare",upcoming:"Urmează",past:"Trecut",location:"Locație",agenda:"Agendă (PDF)",speakers:"Vorbitori",gallery:"Galerie Foto",viewGallery:"Vezi galeria ↗",details:"Detalii"},
     gallery:{title:"Galerie",subtitle:"Fotografii din evenimentele ABHR",noPhotos:"Nu există fotografii.",back:"← Înapoi la albume"},
     research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare",
+    disclaimer:"Informațiile prezentate în această secțiune au scop educațional și științific și nu înlocuiesc evaluarea medicală individuală.",
     introParagraphs:[
       "Bolile hepatice rare reprezintă un domeniu în continuă schimbare. Progresele în genetică și diagnostic molecular, dezvoltarea registrelor internaționale, identificarea unor noi biomarkeri și apariția terapiilor țintite schimbă treptat modul în care aceste boli sunt diagnosticate, monitorizate și tratate.",
       "Pentru bolile rare, colaborarea este esențială. Numărul redus de pacienți cu o anumită afecțiune face ca cercetarea relevantă să depășească adesea granițele unui singur centru sau ale unei singure țări. Registrele de pacienți, studiile multicentrice și rețelele internaționale permit reunirea experienței și generarea unor date care pot fi transferate în practica medicală.",
       "Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cercetării în îngrijirea pacientului și conectarea specialiștilor din Republica Moldova la inițiativele și rețelele europene dedicate bolilor hepatice rare.",
     ]},
     education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație",
+    disclaimer:"Informațiile prezentate în această secțiune au scop educațional și nu înlocuiesc consultația și recomandările medicului curant.",
     introParagraphs:[
       "O boală rară nu trebuie să însemne lipsă de informație.",
       "Accesul la informații corecte și ușor de înțeles este o parte importantă a îngrijirii persoanelor care trăiesc cu o boală hepatică rară.",
@@ -335,12 +337,14 @@ const T = {
     events:{title:"Events",subtitle:"Events and activities organized by ABHR",noEvents:"No events available.",back:"← Back to Events",ongoing:"Ongoing",upcoming:"Upcoming",past:"Past",location:"Location",agenda:"Agenda (PDF)",speakers:"Speakers",gallery:"Photo Gallery",viewGallery:"View gallery ↗",details:"Details"},
     gallery:{title:"Gallery",subtitle:"Photos from ABHR events",noPhotos:"No photos available.",back:"← Back to albums"},
     research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research",
+    disclaimer:"The information presented in this section is for educational and scientific purposes and does not replace individual medical evaluation.",
     introParagraphs:[
       "Rare liver diseases represent a constantly evolving field. Advances in genetics and molecular diagnostics, the development of international registries, the identification of new biomarkers and the emergence of targeted therapies are gradually changing the way these diseases are diagnosed, monitored and treated.",
       "For rare diseases, collaboration is essential. The small number of patients with a given condition means that relevant research often transcends the boundaries of a single center or country. Patient registries, multicenter studies and international networks allow experience to be pooled and data to be generated that can be transferred into medical practice.",
       "The Alliance for Rare Hepatic Diseases from the Republic of Moldova supports the integration of research into patient care and the connection of specialists from the Republic of Moldova to European initiatives and networks dedicated to rare hepatic diseases.",
     ]},
     education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education",
+    disclaimer:"The information presented in this section is for educational purposes and does not replace the consultation and recommendations of the treating physician.",
     introParagraphs:[
       "A rare disease should not mean a lack of information.",
       "Access to accurate and easy-to-understand information is an important part of caring for people living with a rare liver disease.",
@@ -1249,6 +1253,12 @@ function ArticleListPage({items,type,setSelectedArticle,setPage}) {
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
             {items.map(item=><ContentCard key={item.id} item={item} onClick={()=>{setSelectedArticle(item);setPage(type+"Detail");}} type="news"/>)}
           </div>
+          {t.disclaimer&&(
+            <div style={{marginTop:40,background:"#fff8e1",border:"1px solid #fcd34d",borderRadius:12,padding:"16px 20px",display:"flex",gap:12,alignItems:"flex-start"}}>
+              <span style={{fontSize:18,flexShrink:0}}>⚠️</span>
+              <p style={{fontSize:14,color:"#92400e",lineHeight:1.6,margin:0}}>{t.disclaimer}</p>
+            </div>
+          )}
         </div>
       </section>
     </div>
@@ -1868,13 +1878,6 @@ function LinksPage({usefulLinks=[]}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle}/>
-      {t.disclaimer&&(
-        <div style={{background:"#fff8e1",borderLeft:"4px solid #f59e0b",padding:"16px 24px",margin:"0"}}>
-          <div style={{maxWidth:1000,margin:"0 auto",fontSize:14,color:"#92400e",lineHeight:1.6}}>
-            ⚠️ {t.disclaimer}
-          </div>
-        </div>
-      )}
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1000,margin:"0 auto",display:"flex",flexDirection:"column",gap:48}}>
           {renderItems.map(cat=>(
@@ -1901,6 +1904,12 @@ function LinksPage({usefulLinks=[]}) {
               </div>
             </div>
           ))}
+          {t.disclaimer&&(
+            <div style={{background:"#fff8e1",border:"1px solid #fcd34d",borderRadius:12,padding:"16px 20px",display:"flex",gap:12,alignItems:"flex-start"}}>
+              <span style={{fontSize:18,flexShrink:0}}>⚠️</span>
+              <p style={{fontSize:14,color:"#92400e",lineHeight:1.6,margin:0}}>{t.disclaimer}</p>
+            </div>
+          )}
         </div>
       </section>
     </div>
