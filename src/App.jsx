@@ -248,8 +248,22 @@ const T = {
     news:{title:"Știri",subtitle:"Noutăți și anunțuri de la ABHR",noNews:"Nu există știri disponibile.",readMore:"Citește mai mult ↗",back:"← Înapoi la Știri"},
     events:{title:"Evenimente",subtitle:"Evenimente și activități organizate de ABHR",noEvents:"Nu există evenimente.",back:"← Înapoi la Evenimente",ongoing:"În desfășurare",upcoming:"Urmează",past:"Trecut",location:"Locație",agenda:"Agendă (PDF)",speakers:"Vorbitori",gallery:"Galerie Foto",viewGallery:"Vezi galeria ↗",details:"Detalii"},
     gallery:{title:"Galerie",subtitle:"Fotografii din evenimentele ABHR",noPhotos:"Nu există fotografii.",back:"← Înapoi la albume"},
-    research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare"},
-    education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație"},
+    research:{title:"Cercetare",subtitle:"Articole și studii despre bolile hepatice rare",noPosts:"Nu există articole.",back:"← Înapoi la Cercetare",
+    introParagraphs:[
+      "Bolile hepatice rare reprezintă un domeniu în continuă schimbare. Progresele în genetică și diagnostic molecular, dezvoltarea registrelor internaționale, identificarea unor noi biomarkeri și apariția terapiilor țintite schimbă treptat modul în care aceste boli sunt diagnosticate, monitorizate și tratate.",
+      "Pentru bolile rare, colaborarea este esențială. Numărul redus de pacienți cu o anumită afecțiune face ca cercetarea relevantă să depășească adesea granițele unui singur centru sau ale unei singure țări. Registrele de pacienți, studiile multicentrice și rețelele internaționale permit reunirea experienței și generarea unor date care pot fi transferate în practica medicală.",
+      "Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cercetării în îngrijirea pacientului și conectarea specialiștilor din Republica Moldova la inițiativele și rețelele europene dedicate bolilor hepatice rare.",
+    ]},
+    education:{title:"Educație",subtitle:"Resurse educaționale pentru pacienți și familii",noPosts:"Nu există materiale.",back:"← Înapoi la Educație",
+    introParagraphs:[
+      "O boală rară nu trebuie să însemne lipsă de informație.",
+      "Accesul la informații corecte și ușor de înțeles este o parte importantă a îngrijirii persoanelor care trăiesc cu o boală hepatică rară.",
+      "Alianța pentru Boli Hepatice Rare din Republica Moldova își propune să creeze o punte între pacient, familie, medic și comunitatea științifică, oferind acces la informații medicale verificate și la resurse educaționale de încredere.",
+      "Informația corectă contează",
+      "Internetul oferă foarte multe informații despre sănătate, dar nu toate sursele sunt corecte sau actualizate. Recomandăm utilizarea surselor medicale oficiale, a ghidurilor profesionale și a materialelor elaborate sau validate de specialiști și organizații recunoscute.",
+      "Informația medicală poate ajuta pacientul să înțeleagă mai bine boala și să participe activ la propriile decizii de îngrijire, dar nu poate înlocui consultația și recomandările medicului curant.",
+      "În această secțiune vom publica materiale pentru pacienți și familiile lor, ghiduri practice, informații despre diferite boli hepatice rare, materiale pentru profesioniștii din sănătate și resurse dezvoltate de organizații și rețele europene de specialitate.",
+    ]},
     profile:{title:"Profilul Meu",name:"Nume",memberId:"Număr Membru",joinDate:"Data Înscrierii",email:"Email",certs:"Certificate de Participare",noCerts:"Nu există certificate.",download:"Descarcă PDF",view:"Vezi"},
     login:{title:"Autentificare Membri",cardLabel:"Număr Card Membru",passLabel:"Parolă",btn:"Autentificare",error:"Date incorecte.",forgot:"Ați uitat parola? Contactați administratorul."},
     member:{title:"Solicită Cardul de Membru",subtitle:"Completați formularul și administratorul vă va contacta.",name:"Nume complet *",email:"Adresă email *",phone:"Număr de telefon",city:"Oraș / Localitate",message:"Mesaj sau informații suplimentare...",submit:"Trimite Cererea ↗",sent:"Cerere trimisă!",sentDesc:"Administratorul ABHR va procesa cererea și vă va contacta în curând.",again:"Trimite altă cerere",benefits:["Certificate de participare","Resurse educaționale exclusive","Comunitate de suport","Invitații la conferințe"],join:"Alătură-te Nouă",required:"* Câmpuri obligatorii."},
@@ -270,6 +284,7 @@ const T = {
     links:{
       title:"Link-uri Utile",
       subtitle:"Resurse și organizații relevante pentru bolile hepatice rare",
+      disclaimer:"Informațiile prezentate în această secțiune au scop educațional și științific și nu înlocuiesc evaluarea medicală individuală.",
       categories:[
         {label:"Organizații Naționale",items:[
           {name:"Ministerul Sănătății al Republicii Moldova",url:"https://ms.gov.md",desc:"Ministerul Sănătății, Muncii și Protecției Sociale din Moldova."},
@@ -319,8 +334,22 @@ const T = {
     news:{title:"News",subtitle:"News and announcements from ABHR",noNews:"No news available.",readMore:"Read more ↗",back:"← Back to News"},
     events:{title:"Events",subtitle:"Events and activities organized by ABHR",noEvents:"No events available.",back:"← Back to Events",ongoing:"Ongoing",upcoming:"Upcoming",past:"Past",location:"Location",agenda:"Agenda (PDF)",speakers:"Speakers",gallery:"Photo Gallery",viewGallery:"View gallery ↗",details:"Details"},
     gallery:{title:"Gallery",subtitle:"Photos from ABHR events",noPhotos:"No photos available.",back:"← Back to albums"},
-    research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research"},
-    education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education"},
+    research:{title:"Research",subtitle:"Articles and studies on rare liver diseases",noPosts:"No articles available.",back:"← Back to Research",
+    introParagraphs:[
+      "Rare liver diseases represent a constantly evolving field. Advances in genetics and molecular diagnostics, the development of international registries, the identification of new biomarkers and the emergence of targeted therapies are gradually changing the way these diseases are diagnosed, monitored and treated.",
+      "For rare diseases, collaboration is essential. The small number of patients with a given condition means that relevant research often transcends the boundaries of a single center or country. Patient registries, multicenter studies and international networks allow experience to be pooled and data to be generated that can be transferred into medical practice.",
+      "The Alliance for Rare Hepatic Diseases from the Republic of Moldova supports the integration of research into patient care and the connection of specialists from the Republic of Moldova to European initiatives and networks dedicated to rare hepatic diseases.",
+    ]},
+    education:{title:"Education",subtitle:"Educational resources for patients and families",noPosts:"No materials available.",back:"← Back to Education",
+    introParagraphs:[
+      "A rare disease should not mean a lack of information.",
+      "Access to accurate and easy-to-understand information is an important part of caring for people living with a rare liver disease.",
+      "The Alliance for Rare Hepatic Diseases from the Republic of Moldova aims to create a bridge between patients, families, doctors and the scientific community, providing access to verified medical information and reliable educational resources.",
+      "Correct information matters",
+      "The internet provides a lot of health information, but not all sources are accurate or up to date. We recommend using official medical sources, professional guidelines and materials developed or validated by recognized specialists and organizations.",
+      "Medical information can help patients better understand their disease and actively participate in their own care decisions, but cannot replace the consultation and recommendations of the treating physician.",
+      "In this section we will publish materials for patients and their families, practical guides, information about various rare liver diseases, materials for healthcare professionals and resources developed by European specialty organizations and networks.",
+    ]},
     profile:{title:"My Profile",name:"Name",memberId:"Member Number",joinDate:"Join Date",email:"Email",certs:"Participation Certificates",noCerts:"No certificates available.",download:"Download PDF",view:"View"},
     login:{title:"Member Login",cardLabel:"Member Card Number",passLabel:"Password",btn:"Login",error:"Incorrect credentials.",forgot:"Forgot your password? Contact the administrator."},
     member:{title:"Request Member Card",subtitle:"Fill the form and the administrator will contact you.",name:"Full name *",email:"Email address *",phone:"Phone number",city:"City / Locality",message:"Message or additional information...",submit:"Send Request ↗",sent:"Request sent!",sentDesc:"The ABHR administrator will process your request and contact you soon.",again:"Send another request",benefits:["Participation certificates","Exclusive educational resources","Support community","Conference invitations"],join:"Join Us",required:"* Required fields."},
@@ -341,6 +370,7 @@ const T = {
     links:{
       title:"Useful Links",
       subtitle:"Relevant resources and organizations for rare liver diseases",
+      disclaimer:"The information presented in this section is for educational and scientific purposes and does not replace individual medical evaluation.",
       categories:[
         {label:"National Organizations",items:[
           {name:"Ministry of Health of the Republic of Moldova",url:"https://ms.gov.md",desc:"Ministry of Health, Labour and Social Protection of Moldova."},
@@ -899,10 +929,10 @@ function FAQSection() {
               <div style={{fontSize:28,marginBottom:12}}>💬</div>
               <div style={{color:"white",fontWeight:700,marginBottom:8}}>{t.notFound}</div>
               <div style={{color:"rgba(255,255,255,0.6)",fontSize:13,marginBottom:16}}>{t.notFoundDesc}</div>
-              <a href="mailto:contact@abhr.md" style={{display:"inline-flex",alignItems:"center",gap:8,color:GREEN_ACCENT,fontSize:14,fontWeight:700,textDecoration:"none",background:"rgba(46,204,138,0.12)",border:"1px solid rgba(46,204,138,0.3)",padding:"10px 20px",borderRadius:50,transition:"all 0.2s"}}
+              <a href="mailto:alianta.abhr@gmail.com" style={{display:"inline-flex",alignItems:"center",gap:8,color:GREEN_ACCENT,fontSize:14,fontWeight:700,textDecoration:"none",background:"rgba(46,204,138,0.12)",border:"1px solid rgba(46,204,138,0.3)",padding:"10px 20px",borderRadius:50,transition:"all 0.2s"}}
                 onMouseEnter={e=>e.currentTarget.style.background="rgba(46,204,138,0.22)"}
                 onMouseLeave={e=>e.currentTarget.style.background="rgba(46,204,138,0.12)"}
-              >✉ contact@abhr.md</a>
+              >✉ alianta.abhr@gmail.com</a>
             </div>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:12}}>
@@ -1204,7 +1234,16 @@ function ArticleListPage({items,type,setSelectedArticle,setPage}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle} dark={type==="research"}/>
-      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
+      {t.introParagraphs&&t.introParagraphs.length>0&&(
+        <section style={{background:"white",padding:"clamp(32px,5vw,60px) clamp(16px,4vw,32px)"}}>
+          <div style={{maxWidth:800,margin:"0 auto",display:"flex",flexDirection:"column",gap:16}}>
+            {t.introParagraphs.map((para,i)=>(
+              <p key={i} style={{fontSize:16,lineHeight:1.9,color:i===3?"#1a1a1a":"#444",fontWeight:i===3?700:400}}>{para}</p>
+            ))}
+          </div>
+        </section>
+      )}
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:items.length===0?400:undefined}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {items.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noPosts}</p>}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
@@ -1829,6 +1868,13 @@ function LinksPage({usefulLinks=[]}) {
   return (
     <div>
       <PageHero title={t.title} subtitle={t.subtitle}/>
+      {t.disclaimer&&(
+        <div style={{background:"#fff8e1",borderLeft:"4px solid #f59e0b",padding:"16px 24px",margin:"0"}}>
+          <div style={{maxWidth:1000,margin:"0 auto",fontSize:14,color:"#92400e",lineHeight:1.6}}>
+            ⚠️ {t.disclaimer}
+          </div>
+        </div>
+      )}
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1000,margin:"0 auto",display:"flex",flexDirection:"column",gap:48}}>
           {renderItems.map(cat=>(
