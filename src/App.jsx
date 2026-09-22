@@ -679,7 +679,7 @@ function Footer({setPage}) {
     <footer style={{background:GREEN_DARK,padding:"64px 32px 32px",position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px)`,backgroundSize:"40px 40px",pointerEvents:"none"}}/>
       <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:32,marginBottom:48}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:32,marginBottom:48}}>
           <div>
             <div style={{marginBottom:20}}><ABHRLogo size={48} white horizontal/></div>
             <p style={{color:"rgba(255,255,255,0.55)",fontSize:14,lineHeight:1.8,maxWidth:280}}>{t.home.sub}</p>
@@ -785,7 +785,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       {/* Stats */}
       <section ref={statsRef} style={{background:`linear-gradient(90deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,padding:"56px 32px",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 20% 50%,rgba(255,255,255,0.05) 0%,transparent 60%),radial-gradient(circle at 80% 50%,rgba(255,255,255,0.05) 0%,transparent 60%)",pointerEvents:"none"}}/>
-        <div style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:0,position:"relative",zIndex:2}}>
+        <div style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:0,position:"relative",zIndex:2}}>
           {t.stats.map((s,i)=>(
             <div key={s.l} style={{textAlign:"center",padding:"16px 24px",borderRight:"none",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
               <div style={{fontSize:36,marginBottom:8}}>{s.i}</div>
@@ -799,7 +799,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       {/* About */}
       <section style={{background:"#f8f9fa",padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:48,alignItems:"center"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,340px),1fr))",gap:48,alignItems:"center"}}>
             <div>
               <SectionLabel>{t.about.label}</SectionLabel>
               <h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:"#1a1a1a",margin:"0 0 24px",lineHeight:1.2}}>{t.about.title}</h2>
@@ -829,7 +829,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
             <div><SectionLabel>{t.home.recentNews}</SectionLabel><h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(26px,3.5vw,40px)",color:"#1a1a1a",margin:0,lineHeight:1.2}}>{t.home.newsSubtitle}</h2></div>
             <PillBtn variant="outline" small onClick={()=>setPage("news")}>{t.home.allNews}</PillBtn>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
             {news.slice(0,2).map(n=><ContentCard key={n.id} item={n} onClick={()=>{setSelectedNews(n);setPage("newsDetail");}} type="news"/>)}
           </div>
         </div>
@@ -842,7 +842,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
             <div><SectionLabel>{t.home.upcomingEvents}</SectionLabel><h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(26px,3.5vw,40px)",color:"#1a1a1a",margin:0,lineHeight:1.2}}>{t.home.eventsSubtitle}</h2></div>
             <PillBtn variant="outline" small onClick={()=>setPage("events")}>{t.home.allEvents}</PillBtn>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
             {homeEvents.map(e=><ContentCard key={e.id} item={e} onClick={()=>{setSelectedEvent(e);setPage("eventDetail");}} type="event"/>)}
             {homeEvents.length===0&&<p style={{color:"#888"}}>{t.events.noEvents}</p>}
           </div>
@@ -852,7 +852,7 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       {/* Member Banner — hidden for logged-in members */}
       {!user&&<section style={{padding:"clamp(48px,8vw,100px) clamp(16px,4vw,32px)",background:"white"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,borderRadius:28,overflow:"hidden",position:"relative",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",minHeight:340}}>
+          <div style={{background:`linear-gradient(135deg,${GREEN_DARK},${GREEN_MID},#0d4a52)`,borderRadius:28,overflow:"hidden",position:"relative",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",minHeight:340}}>
             <WavyBg/>
             <div style={{position:"absolute",top:24,right:24,color:"rgba(255,255,255,0.12)",fontSize:48}}>✦</div>
             <div style={{padding:"64px 56px",position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center"}}>
@@ -890,7 +890,7 @@ function FAQSection() {
       <WavyBg color="rgba(255,255,255,0.04)"/>
       <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)`,backgroundSize:"60px 60px",pointerEvents:"none"}}/>
       <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:2}}>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:48,alignItems:"start"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,320px),1fr))",gap:48,alignItems:"start",maxWidth:900,margin:"0 auto"}}>
           <div>
             <SectionLabel>{t.title}</SectionLabel>
             <h2 style={{fontFamily:"Georgia,serif",fontSize:"clamp(28px,3.5vw,44px)",color:"white",margin:"0 0 24px",lineHeight:1.2}}>{t.subtitle}</h2>
@@ -944,7 +944,7 @@ function AboutPage({onMemberClick}) {
       </section>
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:24}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:24}}>
             {t.about.features.map(f=>(
               <div key={f.t} style={{background:"white",borderRadius:16,padding:32,boxShadow:"0 4px 24px rgba(0,0,0,0.06)",borderTop:`4px solid ${GREEN}`,transition:"all 0.3s"}}
                 onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 40px rgba(0,0,0,0.1)";}}
@@ -981,7 +981,7 @@ function NewsListPage({news,setSelectedNews,setPage}) {
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {news.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noNews}</p>}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
             {news.map(n=><ContentCard key={n.id} item={n} onClick={()=>{setSelectedNews(n);setPage("newsDetail");}} type="news"/>)}
           </div>
         </div>
@@ -1020,7 +1020,7 @@ function EventsListPage({events,setSelectedEvent,setPage}) {
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {ordered.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noEvents}</p>}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(340px,1fr))",gap:28}}>
             {ordered.map(e=>(
               <div key={e.id} onClick={()=>{setSelectedEvent(e);setPage("eventDetail");}} style={{background:"white",borderRadius:20,overflow:"hidden",cursor:"pointer",transition:"all 0.3s",boxShadow:"0 4px 20px rgba(0,0,0,0.06)",position:"relative"}}
                 onMouseEnter={ev=>{ev.currentTarget.style.transform="translateY(-6px)";ev.currentTarget.style.boxShadow="0 20px 60px rgba(0,0,0,0.1)";}}
@@ -1152,7 +1152,7 @@ function GalleryPage({albums, initialAlbum=null, onAlbumOpen}) {
           <div style={{maxWidth:1200,margin:"0 auto"}}>
             <BackBtn onClick={()=>setSelectedAlbum(null)} label={t.back}/>
             {photos.length===0&&<p style={{color:"#888"}}>{t.noPhotos}</p>}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16}}>
               {photos.map((photo,idx)=>(
                 <div key={photo.id} onClick={()=>setLightbox(idx)} style={{cursor:"pointer",borderRadius:12,overflow:"hidden",boxShadow:"0 4px 16px rgba(0,0,0,0.1)",aspectRatio:"4/3",position:"relative",background:"#000"}}
                   onMouseEnter={e=>{e.currentTarget.querySelector("img").style.transform="scale(1.05)";e.currentTarget.querySelector("img").style.opacity="0.85";}}
@@ -1175,7 +1175,7 @@ function GalleryPage({albums, initialAlbum=null, onAlbumOpen}) {
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {albums.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noPhotos}</p>}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:28}}>
             {albums.map(album=>(
               <div key={album.id} onClick={()=>setSelectedAlbum(album)} style={{cursor:"pointer",borderRadius:20,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.08)",background:"white",transition:"all 0.3s"}}
                 onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-6px)";e.currentTarget.style.boxShadow="0 20px 60px rgba(0,0,0,0.12)";}}
@@ -1207,7 +1207,7 @@ function ArticleListPage({items,type,setSelectedArticle,setPage}) {
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)",minHeight:400}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           {items.length===0&&<p style={{color:"#888",textAlign:"center",padding:60}}>{t.noPosts}</p>}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:28}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:28}}>
             {items.map(item=><ContentCard key={item.id} item={item} onClick={()=>{setSelectedArticle(item);setPage(type+"Detail");}} type="news"/>)}
           </div>
         </div>
@@ -1615,7 +1615,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         </div>
         {showCertForm&&(
           <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:24,marginBottom:24}}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
               <div>
                 <label style={{display:"block",fontSize:12,fontWeight:600,color:"#555",marginBottom:5}}>{t.fields.event_id}</label>
                 <select value={certForm.event_id||""} onChange={e=>setCertForm(p=>({...p,event_id:e.target.value}))} style={inputStyleA}>
@@ -1666,7 +1666,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         </div>
         {showPhotoForm&&(
           <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:24,marginBottom:24}}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
               <FileUploadField
                 label={t.fields["photoUrl"]||"Fotografii"}
                 value=""
@@ -1694,7 +1694,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
             </div>
           </div>
         )}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:16}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:16}}>
           {(photoAlbum.photos||[]).map(photo=>(
             <div key={photo.id} style={{borderRadius:10,overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.1)",background:"white"}}>
               <img src={photo.url} alt="" style={{width:"100%",height:150,objectFit:"cover"}}/>
@@ -1726,7 +1726,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       </div>
       {showForm&&(
         <div style={{background:GREEN_LIGHT_A,borderRadius:12,padding:28,marginBottom:28}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
             {currentFields.map(f=>{
               const isImageField = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="cert_image_url";
               const isPdfField = f==="agenda_url";
@@ -1837,7 +1837,7 @@ function LinksPage({usefulLinks=[]}) {
                 <div style={{width:4,height:28,background:GREEN,borderRadius:2}}/>
                 <h2 style={{fontFamily:"Georgia,serif",fontSize:22,color:"#1a1a1a",margin:0}}>{cat.label}</h2>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:16}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:16}}>
                 {cat.items.map(item=>(
                   <a key={item.name} href={item.url} target="_blank" rel="noreferrer"
                     style={{display:"block",background:"white",borderRadius:16,padding:24,textDecoration:"none",boxShadow:"0 4px 20px rgba(0,0,0,0.06)",border:"1px solid #eee",transition:"all 0.25s"}}
@@ -2163,7 +2163,7 @@ export default function App() {
         </div>
       </div>
       {/* Skeleton Cards */}
-      <div style={{maxWidth:1200,margin:"60px auto",padding:"0 32px",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:24}}>
+      <div style={{maxWidth:1200,margin:"60px auto",padding:"0 32px",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:24}}>
         {[1,2,3].map(i=>(
           <div key={i} style={{background:"white",borderRadius:20,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
             <div className="sk" style={{height:180,borderRadius:0}}/>
