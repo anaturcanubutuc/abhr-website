@@ -2195,17 +2195,6 @@ export default function App() {
             ::placeholder{color:rgba(255,255,255,0.35)!important}
             input[type="date"]{color:#333!important}
             input[type="date"]::placeholder{color:#aaa!important}
-            @media(max-width:768px){
-              /* Footer grid */
-              footer > div > div:first-child > div[style*="grid"] { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
-              /* Stats bar */
-              div[style*="repeat(4,1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
-              /* About section grid */
-              div[style*="1fr 1.4fr"] { grid-template-columns: 1fr !important; }
-              div[style*="1fr 1fr"] { grid-template-columns: 1fr !important; }
-              div[style*="2fr 1fr"] { grid-template-columns: 1fr !important; }
-              div[style*="1fr 2fr"] { grid-template-columns: 1fr !important; }
-            }
           `}</style>
           <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
           <MemberPanel open={panelOpen} onClose={()=>setPanelOpen(false)}/>
