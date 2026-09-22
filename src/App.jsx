@@ -757,8 +757,8 @@ function HomePage({setPage,news,events,onMemberClick,setSelectedNews,setSelected
       {/* Hero */}
       <section style={{position:"relative",minHeight:"100vh",background:`linear-gradient(145deg,${GREEN_DARK} 0%,${GREEN_MID} 50%,#0d4a52 100%)`,display:"flex",alignItems:"center",overflow:"hidden"}}>
         <WavyBg/>
-        <div style={{position:"absolute",top:"10%",right:"8%",width:320,height:320,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.08)",pointerEvents:"none"}}/>
-        <div style={{position:"absolute",top:"15%",right:"12%",width:200,height:200,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",pointerEvents:"none"}}/>
+        <div style={{position:"absolute",top:"10%",right:"0",width:"min(320px,30vw)",height:"min(320px,30vw)",borderRadius:"50%",border:"1px solid rgba(255,255,255,0.08)",pointerEvents:"none",transform:"translateX(30%)"}}/>
+        <div style={{position:"absolute",top:"15%",right:"0",width:"min(200px,20vw)",height:"min(200px,20vw)",borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",pointerEvents:"none",transform:"translateX(20%)"}}/>
         {[[80,20],[90,60],[15,75]].map(([top,left],i)=><div key={i} style={{position:"absolute",top:`${top}%`,left:`${left}%`,color:"rgba(255,255,255,0.12)",fontSize:28,pointerEvents:"none"}}>✦</div>)}
         <div style={{maxWidth:1200,margin:"0 auto",padding:"120px 32px 80px",position:"relative",zIndex:2,width:"100%"}}>
           <div style={{maxWidth:680}}>
@@ -2188,15 +2188,14 @@ export default function App() {
     <ErrorBoundary>
     <LangContext.Provider value={{lang,setLang}}>
       <AuthContext.Provider value={{user,login,logout}}>
-        <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa"}}>
+        <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",fontFamily:"'Segoe UI',Helvetica,Arial,sans-serif",background:"#f8f9fa",overflowX:"hidden",maxWidth:"100vw"}}>
           <style>{`
             *{box-sizing:border-box;margin:0;padding:0}
-            body{overflow-x:hidden}
+            html,body{overflow-x:hidden;max-width:100vw}
             ::placeholder{color:rgba(255,255,255,0.35)!important}
             input[type="date"]{color:#333!important}
             input[type="date"]::placeholder{color:#aaa!important}
           `}</style>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
           <MemberPanel open={panelOpen} onClose={()=>setPanelOpen(false)}/>
           {showNav&&<Navbar page={cp} setPage={setPage} onMemberClick={openPanel}/>}
           <div style={{flex:1}}>
