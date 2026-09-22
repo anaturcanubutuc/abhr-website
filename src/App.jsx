@@ -243,7 +243,7 @@ function FileUploadField({ label, value, onChange, accept, bucket, optional, mul
 const T = {
   ro:{
     orgName:"Alianța pentru Boli Hepatice Rare",
-    nav:{home:"Acasă",about:"Despre Noi",activitati:"Activități",events:"Evenimente",gallery:"Galerie",resurse:"Resurse",news:"Știri",research:"Cercetare",education:"Educație",contact:"Contact",profile:"Profilul Meu",login:"Autentificare",logout:"Deconectare",admin:"Admin",member:"Devino Membru"},
+    nav:{home:"Acasă",about:"Despre Noi",activitati:"Activități",events:"Evenimente",gallery:"Galerie",resurse:"Resurse",news:"Știri",research:"Cercetare",education:"Educație",links:"Link-uri Utile",contact:"Contact",profile:"Profilul Meu",login:"Autentificare",logout:"Deconectare",admin:"Admin",member:"Devino Membru"},
     home:{hero:"Împreună pentru sănătate hepatică",sub:"Susținem pacienții și familiile afectate de boli hepatice rare din Republica Moldova prin educație, cercetare și comunitate.",cta:"Despre Noi",member:"Devino Membru",recentNews:"Ultimele Știri",newsSubtitle:"Rămâneți la curent cu noutățile ABHR",allNews:"Toate Știrile ↗",upcomingEvents:"Evenimente",eventsSubtitle:"Evenimente și activități ABHR",allEvents:"Toate Evenimentele ↗"},
     news:{title:"Știri",subtitle:"Noutăți și anunțuri de la ABHR",noNews:"Nu există știri disponibile.",readMore:"Citește mai mult ↗",back:"← Înapoi la Știri"},
     events:{title:"Evenimente",subtitle:"Evenimente și activități organizate de ABHR",noEvents:"Nu există evenimente.",back:"← Înapoi la Evenimente",ongoing:"În desfășurare",upcoming:"Urmează",past:"Trecut",location:"Locație",agenda:"Agendă (PDF)",speakers:"Vorbitori",gallery:"Galerie Foto",viewGallery:"Vezi galeria ↗",details:"Detalii"},
@@ -263,8 +263,42 @@ const T = {
       ]
     },
     stats:[{v:"120+",l:"Membri Activi",i:"👥",t:120},{v:"24",l:"Evenimente Organizate",i:"📅",t:24},{v:"48",l:"Articole Publicate",i:"📰",t:48},{v:"6+",l:"Ani de Activitate",i:"🏆",t:6}],
-    about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Reprezentare",d:"Reprezentăm interesele pacienților la nivel național."}]},
+    about:{label:"Despre Noi",title:"Împreună pentru sănătate hepatică în Moldova",body:"ABHR este o organizație dedicată sprijinirii pacienților cu boli hepatice rare și familiilor acestora. Ne angajăm să oferim informații, resurse și suport comunității noastre.",cta:"Citește Mai Mult ↗",
+    extended:"Bolile hepatice rare reprezintă un domeniu în continuă schimbare. Progresele în genetică și diagnostic molecular, dezvoltarea registrelor internaționale, identificarea unor noi biomarkeri și apariția terapiilor țintite schimbă treptat modul în care aceste boli sunt diagnosticate, monitorizate și tratate.
+
+Pentru bolile rare, colaborarea este esențială. Numărul redus de pacienți cu o anumită afecțiune face ca cercetarea relevantă să depășească adesea granițele unui singur centru sau ale unei singure țări. Registrele de pacienți, studiile multicentrice și rețelele internaționale permit reunirea experienței și generarea unor date care pot fi transferate în practica medicală.
+
+Alianța pentru Boli Hepatice Rare din Republica Moldova susține integrarea cercetării în îngrijirea pacientului și conectarea specialiștilor din Republica Moldova la inițiativele și rețelele europene dedicate bolilor hepatice rare.",
+    features:[{icon:"🔬",t:"Cercetare Medicală",d:"Susținem cercetarea în domeniul bolilor hepatice rare din Moldova."},{icon:"🤝",t:"Suport Comunitar",d:"Oferim sprijin emoțional și practic pacienților și familiilor lor."},{icon:"📚",t:"Educație & Informare",d:"Publicăm resurse educaționale pentru pacienți și profesioniști."},{icon:"🌍",t:"Reprezentare",d:"Reprezentăm interesele pacienților la nivel național."}]},
     footer:"© 2025 Alianța pentru Boli Hepatice Rare. Toate drepturile rezervate.",
+    links:{
+      title:"Link-uri Utile",
+      subtitle:"Resurse și organizații relevante pentru bolile hepatice rare",
+      categories:[
+        {label:"Organizații Naționale",items:[
+          {name:"Ministerul Sănătății al Republicii Moldova",url:"https://ms.gov.md",desc:"Ministerul Sănătății, Muncii și Protecției Sociale din Moldova."},
+          {name:"CNAM — Casa Națională de Asigurări în Medicină",url:"https://cnam.md",desc:"Asigurările medicale obligatorii din Republica Moldova."},
+          {name:"Asociația pentru Studierea Ficatului din Republica Moldova",url:"https://hepatologie.md",desc:"Societate medicală dedicată bolilor hepatice din Moldova."},
+        ]},
+        {label:"Organizații Internaționale",items:[
+          {name:"EURODIS — Rare Diseases Europe",url:"https://www.eurordis.org",desc:"Alianța europeană a organizațiilor pentru boli rare."},
+          {name:"NORD — National Organization for Rare Disorders",url:"https://rarediseases.org",desc:"Organizație internațională dedicată bolilor rare."},
+          {name:"European Association for the Study of the Liver (EASL)",url:"https://easl.eu",desc:"Asociația europeană pentru studiul ficatului."},
+          {name:"European Liver Patients Association (ELPA)",url:"https://elpa.eu.com",desc:"Asociația europeană a pacienților cu boli hepatice."},
+        ]},
+        {label:"Baze de Date și Resurse Medicale",items:[
+          {name:"Orphanet",url:"https://www.orpha.net",desc:"Portalul european de referință pentru bolile rare."},
+          {name:"ClinicalTrials.gov",url:"https://clinicaltrials.gov",desc:"Baza de date a studiilor clinice în desfășurare."},
+          {name:"PubMed — NCBI",url:"https://pubmed.ncbi.nlm.nih.gov",desc:"Baza de date internațională de articole medicale științifice."},
+          {name:"GeneReviews",url:"https://www.ncbi.nlm.nih.gov/books/NBK1116/",desc:"Recenzii de experți despre boli genetice, inclusiv hepatice rare."},
+        ]},
+        {label:"Jurnale Științifice",items:[
+          {name:"Journal of Hepatology",url:"https://www.journal-of-hepatology.eu",desc:"Jurnalul oficial al EASL, dedicat cercetării hepatice."},
+          {name:"Hepatology",url:"https://journals.lww.com/hep",desc:"Jurnal internațional de hepatologie clinică și de cercetare."},
+          {name:"Liver International",url:"https://onlinelibrary.wiley.com/journal/14783231",desc:"Jurnal internațional multidisciplinar despre boli hepatice."},
+        ]},
+      ]
+    },
     contact:{
       title:"Contact",
       subtitle:"Luați legătura cu noi",
@@ -280,11 +314,11 @@ const T = {
       followUs:"Urmăriți-ne",
     },
     loading:"Se încarcă...",
-    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",banner_image_url:"URL Imagine Banner (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment"}},
+    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",banner_image_url:"URL Imagine Banner (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment",name:"Nume",url:"URL",category_ro:"Categorie (RO)",category_en:"Categorie (EN)",description_ro:"Descriere (RO)",description_en:"Descriere (EN)"}},
   },
   en:{
     orgName:"Alliance for Rare Hepatic Diseases",
-    nav:{home:"Home",about:"About Us",activitati:"Activities",events:"Events",gallery:"Gallery",resurse:"Resources",news:"News",research:"Research",education:"Education",contact:"Contact",profile:"My Profile",login:"Login",logout:"Logout",admin:"Admin",member:"Become a Member"},
+    nav:{home:"Home",about:"About Us",activitati:"Activities",events:"Events",gallery:"Gallery",resurse:"Resources",news:"News",research:"Research",education:"Education",links:"Useful Links",contact:"Contact",profile:"My Profile",login:"Login",logout:"Logout",admin:"Admin",member:"Become a Member"},
     home:{hero:"Together for Hepatic Health",sub:"We support patients and families affected by rare liver diseases in the Republic of Moldova through education, research and community.",cta:"About Us",member:"Become a Member",recentNews:"Latest News",newsSubtitle:"Stay up to date with ABHR news",allNews:"All News ↗",upcomingEvents:"Events",eventsSubtitle:"Events and activities organized by ABHR",allEvents:"All Events ↗"},
     news:{title:"News",subtitle:"News and announcements from ABHR",noNews:"No news available.",readMore:"Read more ↗",back:"← Back to News"},
     events:{title:"Events",subtitle:"Events and activities organized by ABHR",noEvents:"No events available.",back:"← Back to Events",ongoing:"Ongoing",upcoming:"Upcoming",past:"Past",location:"Location",agenda:"Agenda (PDF)",speakers:"Speakers",gallery:"Photo Gallery",viewGallery:"View gallery ↗",details:"Details"},
@@ -304,8 +338,42 @@ const T = {
       ]
     },
     stats:[{v:"120+",l:"Active Members",i:"👥",t:120},{v:"24",l:"Events Organized",i:"📅",t:24},{v:"48",l:"Articles Published",i:"📰",t:48},{v:"6+",l:"Years of Activity",i:"🏆",t:6}],
-    about:{label:"About Us",title:"Together for hepatic health in Moldova",body:"ABHR is an organization dedicated to supporting patients with rare liver diseases and their families. We are committed to providing information, resources and support to our community.",cta:"Read More ↗",features:[{icon:"🔬",t:"Medical Research",d:"We support research in rare liver diseases in Moldova."},{icon:"🤝",t:"Community Support",d:"We provide emotional and practical support to patients and families."},{icon:"📚",t:"Education & Information",d:"We publish educational resources for patients and professionals."},{icon:"🌍",t:"Advocacy",d:"We represent patient interests at the national level."}]},
+    about:{label:"About Us",title:"Together for hepatic health in Moldova",body:"ABHR is an organization dedicated to supporting patients with rare liver diseases and their families. We are committed to providing information, resources and support to our community.",cta:"Read More ↗",
+    extended:"Rare liver diseases represent a constantly evolving field. Advances in genetics and molecular diagnostics, the development of international registries, the identification of new biomarkers and the emergence of targeted therapies are gradually changing the way these diseases are diagnosed, monitored and treated.
+
+For rare diseases, collaboration is essential. The small number of patients with a given condition means that relevant research often transcends the boundaries of a single center or country. Patient registries, multicenter studies and international networks allow experience to be pooled and data to be generated that can be transferred into medical practice.
+
+The Alliance for Rare Hepatic Diseases from the Republic of Moldova supports the integration of research into patient care and the connection of specialists from the Republic of Moldova to European initiatives and networks dedicated to rare hepatic diseases.",
+    features:[{icon:"🔬",t:"Medical Research",d:"We support research in rare liver diseases in Moldova."},{icon:"🤝",t:"Community Support",d:"We provide emotional and practical support to patients and families."},{icon:"📚",t:"Education & Information",d:"We publish educational resources for patients and professionals."},{icon:"🌍",t:"Advocacy",d:"We represent patient interests at the national level."}]},
     footer:"© 2025 Alliance for Rare Hepatic Diseases. All rights reserved.",
+    links:{
+      title:"Useful Links",
+      subtitle:"Relevant resources and organizations for rare liver diseases",
+      categories:[
+        {label:"National Organizations",items:[
+          {name:"Ministry of Health of the Republic of Moldova",url:"https://ms.gov.md",desc:"Ministry of Health, Labour and Social Protection of Moldova."},
+          {name:"CNAM — National Health Insurance House",url:"https://cnam.md",desc:"Mandatory health insurance in the Republic of Moldova."},
+          {name:"Association for the Study of the Liver from Moldova",url:"https://hepatologie.md",desc:"Medical society dedicated to liver diseases in Moldova."},
+        ]},
+        {label:"International Organizations",items:[
+          {name:"EURODIS — Rare Diseases Europe",url:"https://www.eurordis.org",desc:"European alliance of rare disease organizations."},
+          {name:"NORD — National Organization for Rare Disorders",url:"https://rarediseases.org",desc:"International organization dedicated to rare diseases."},
+          {name:"European Association for the Study of the Liver (EASL)",url:"https://easl.eu",desc:"European association for the study of the liver."},
+          {name:"European Liver Patients Association (ELPA)",url:"https://elpa.eu.com",desc:"European association of liver disease patients."},
+        ]},
+        {label:"Databases & Medical Resources",items:[
+          {name:"Orphanet",url:"https://www.orpha.net",desc:"European reference portal for rare diseases."},
+          {name:"ClinicalTrials.gov",url:"https://clinicaltrials.gov",desc:"Database of ongoing clinical studies worldwide."},
+          {name:"PubMed — NCBI",url:"https://pubmed.ncbi.nlm.nih.gov",desc:"International database of scientific medical articles."},
+          {name:"GeneReviews",url:"https://www.ncbi.nlm.nih.gov/books/NBK1116/",desc:"Expert reviews on genetic diseases including rare liver conditions."},
+        ]},
+        {label:"Scientific Journals",items:[
+          {name:"Journal of Hepatology",url:"https://www.journal-of-hepatology.eu",desc:"Official journal of EASL, dedicated to liver research."},
+          {name:"Hepatology",url:"https://journals.lww.com/hep",desc:"International journal of clinical and research hepatology."},
+          {name:"Liver International",url:"https://onlinelibrary.wiley.com/journal/14783231",desc:"International multidisciplinary journal on liver diseases."},
+        ]},
+      ]
+    },
     contact:{
       title:"Contact",
       subtitle:"Get in touch with us",
@@ -321,7 +389,7 @@ const T = {
       followUs:"Follow us",
     },
     loading:"Loading...",
-    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",banner_image_url:"Banner Image URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event"}},
+    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",banner_image_url:"Banner Image URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event",name:"Name",url:"URL",category_ro:"Category (RO)",category_en:"Category (EN)",description_ro:"Description (RO)",description_en:"Description (EN)"}},
   }
 };
 
@@ -539,7 +607,7 @@ function Navbar({page,setPage,onMemberClick}) {
     return()=>window.removeEventListener("scroll",fn);
   },[]);
   // Force scrolled=true on pages without dark hero
-  const noHeroPages=["admin","profile","newsDetail","eventDetail","researchDetail","educationDetail","contact"];
+  const noHeroPages=["admin","profile","newsDetail","eventDetail","researchDetail","educationDetail","contact","links"];
   const effectiveScrolled = scrolled || noHeroPages.includes(page);
   const go=(key)=>{setPage(key);setMenuOpen(false);setDropdown(null);};
   const btnColor = effectiveScrolled?"#333":"white";
@@ -548,7 +616,7 @@ function Navbar({page,setPage,onMemberClick}) {
     {label:t.home,key:"home"},
     {label:t.about,key:"about"},
     {label:t.activitati+" ▾",key:"activitati",children:[{label:t.events,key:"events"},{label:t.gallery,key:"gallery"}]},
-    {label:t.resurse+" ▾",key:"resurse",children:[{label:t.news,key:"news"},{label:t.research,key:"research"},{label:t.education,key:"education"}]},
+    {label:t.resurse+" ▾",key:"resurse",children:[{label:t.news,key:"news"},{label:t.research,key:"research"},{label:t.education,key:"education"},{label:t.links,key:"links"}]},
     {label:t.contact,key:"contact"},
     ...(user&&!user.isAdmin?[{label:t.profile,key:"profile"}]:[]),
     ...(user?.isAdmin?[{label:t.admin,key:"admin"}]:[]),
@@ -626,9 +694,8 @@ function Footer({setPage}) {
           </div>
           {[
             {title:t.nav.activitati,links:[{l:t.nav.events,k:"events"},{l:t.nav.gallery,k:"gallery"}]},
-            {title:t.nav.resurse,links:[{l:t.nav.news,k:"news"},{l:t.nav.research,k:"research"},{l:t.nav.education,k:"education"}]},
-            {title:t.nav.contact,links:[{l:t.contact.emailVal,k:"contact"},{l:t.contact.phoneVal,k:null},{l:"Facebook",k:null}]},
-            {title:"Contact",links:[{l:"contact@abhr.md",k:null},{l:"Chișinău, Moldova",k:null},{l:"Facebook ABHR",k:null}]},
+            {title:t.nav.resurse,links:[{l:t.nav.news,k:"news"},{l:t.nav.research,k:"research"},{l:t.nav.education,k:"education"},{l:t.nav.links,k:"links"}]},
+            
           ].map(col=>(
             <div key={col.title}>
               <div style={{color:"white",fontWeight:700,marginBottom:20,fontSize:14,letterSpacing:0.5}}>{col.title}</div>
@@ -637,6 +704,16 @@ function Footer({setPage}) {
               </div>
             </div>
           ))}
+          {/* Contact column */}
+          <div>
+            <div style={{color:"white",fontWeight:700,marginBottom:20,fontSize:14,letterSpacing:0.5}}>{t.nav.contact}</div>
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              <span style={{color:"rgba(255,255,255,0.5)",fontSize:13}}>{t.contact.emailVal}</span>
+              <span style={{color:"rgba(255,255,255,0.5)",fontSize:13}}>{t.contact.phoneVal}</span>
+              <a href="https://www.facebook.com/people/Alian%C8%9Ba-pentru-Boli-Hepatice-Rare-din-Moldova/61552694548049/" target="_blank" rel="noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:13,textDecoration:"none",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color=GREEN_ACCENT} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.5)"}>Facebook</a>
+              <a href="https://www.linkedin.com/company/alian%C8%9Ba-de-boli-hepatice-rare-din-moldova" target="_blank" rel="noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:13,textDecoration:"none",transition:"color 0.2s"}} onMouseEnter={e=>e.target.style.color=GREEN_ACCENT} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.5)"}>LinkedIn</a>
+            </div>
+          </div>
         </div>
         <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",paddingTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
           <span style={{color:"rgba(255,255,255,0.4)",fontSize:13}}>{t.footer}</span>
@@ -865,6 +942,14 @@ function AboutPage({onMemberClick}) {
   return (
     <div>
       <PageHero title={t.about.label} subtitle={t.about.body}/>
+      {/* Extended text section */}
+      <section style={{background:"white",padding:"clamp(40px,6vw,72px) clamp(16px,4vw,32px)"}}>
+        <div style={{maxWidth:800,margin:"0 auto"}}>
+          {t.about.extended.split("\n\n").map((para,i)=>(
+            <p key={i} style={{fontSize:16,lineHeight:1.9,color:"#444",marginBottom:i<2?24:0}}>{para}</p>
+          ))}
+        </div>
+      </section>
       <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:24}}>
@@ -1356,7 +1441,7 @@ function ProfilePage({certificates,events,accessToken:accessTokenProp}) {
 
 
 // ─── ADMIN PANEL (unchanged functional style) ─────────────────────────────────
-function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates,authedDb,authedStorage,accessToken}) {
+function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setAlbums,research,setResearch,education,setEducation,certificates,setCertificates,usefulLinks,setUsefulLinks,authedDb,authedStorage,accessToken}) {
   // Use authedDb for all admin writes, fall back to db if not available
   const adb = authedDb || db;
   const ast = authedStorage || storage;
@@ -1377,7 +1462,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   const [certForm,setCertForm] = useState({});
   const [showCertForm,setShowCertForm] = useState(false);
 
-  const tabs=[{key:"members",label:t.tabs.members},{key:"news",label:t.tabs.news},{key:"events",label:t.tabs.events},{key:"gallery",label:t.tabs.gallery},{key:"research",label:t.tabs.research},{key:"education",label:t.tabs.education}];
+  const tabs=[{key:"members",label:t.tabs.members},{key:"news",label:t.tabs.news},{key:"events",label:t.tabs.events},{key:"gallery",label:t.tabs.gallery},{key:"research",label:t.tabs.research},{key:"education",label:t.tabs.education},{key:"links",label:lang==="ro"?"Link-uri Utile":"Useful Links"}];
   const openAdd=()=>{setEditItem(null);setForm({});setShowForm(true);};
   const openEdit=(item)=>{setEditItem(item);setForm({...item});setShowForm(true);};
   const closeForm=()=>{setShowForm(false);setEditItem(null);setForm({});};
@@ -1388,6 +1473,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     if(tab==="events")return[events,setEvents,"events"];
     if(tab==="gallery")return[albums,setAlbums,"albums"];
     if(tab==="research")return[research,setResearch,"research"];
+    if(tab==="links")return[usefulLinks,setUsefulLinks,"useful_links"];
     return[education,setEducation,"education"];
   };
 
@@ -1401,6 +1487,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     }
     if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||null,date:form.date||new Date().toISOString().slice(0,10)};
     if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",banner_image_url:form.banner_image_url||null,agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
+    if(tab==="links")return{name:form.name,url:form.url,category_ro:form.category_ro,category_en:form.category_en,description_ro:form.description_ro||"",description_en:form.description_en||""};
     return{name_ro:form.albumNameRo||"",name_en:form.albumNameEn||"",cover_url:form.coverUrl||null};
   };
 
@@ -1426,6 +1513,9 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
     if(tab==="gallery"){
       if(!form.albumNameRo?.trim()||!form.albumNameEn?.trim()){setFormError(lang==="ro"?"Numele albumului (RO și EN) este obligatoriu.":"Album name (RO and EN) is required.");return;}
     }
+    if(tab==="links"){
+      if(!form.name?.trim()||!form.url?.trim()||!form.category_ro?.trim()||!form.category_en?.trim()){setFormError(lang==="ro"?"Numele, URL-ul și categoria sunt obligatorii.":"Name, URL and category are required.");return;}
+    }
     setSaving(true);
     const[data,setter,tableName]=getData();
     let payload=buildPayload();
@@ -1445,7 +1535,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
         }
       }
     }
-    const tname=tableName==="gallery"?"albums":tableName;
+    const tname=tableName==="gallery"?"albums":tableName==="links"?"useful_links":tableName;
     try{
       if(editItem){await adb.update(tname,editItem.id,payload);setter(arr=>arr.map(x=>x.id===editItem.id?{...x,...payload}:x));}
       else{
@@ -1515,12 +1605,12 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   const handleDeleteCert=async(id)=>{await adb.delete("certificates",id);setCertificates(cs=>cs.filter(c=>c.id!==id));};
   const downloadCert=(cert)=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{const c=document.createElement("canvas");c.width=img.width;c.height=img.height;c.getContext("2d").drawImage(img,0,0);const a=document.createElement("a");a.download=`cert-${cert.member_id}.png`;a.href=c.toDataURL("image/png");a.click();};img.src=cert.image_url;};
 
-  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"]};
+  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"],links:["name","url","category_ro","category_en","description_ro","description_en"]};
   const fieldLabel=(f)=>t.fields[f]||f;
   const[currentData]=getData();
   const currentFields=FIELDS[tab]||[];
-  const addLabel=tab==="members"?t.addMember:tab==="gallery"?t.addAlbum:t.addPost;
-  const getItemTitle=(item)=>{if(tab==="members")return item.name;if(tab==="gallery")return lang==="ro"?item.name_ro:item.name_en;return lang==="ro"?item.title_ro:item.title_en;};
+  const addLabel=tab==="members"?t.addMember:tab==="gallery"?t.addAlbum:tab==="links"?(lang==="ro"?"Adaugă Link":"Add Link"):t.addPost;
+  const getItemTitle=(item)=>{if(tab==="members")return item.name;if(tab==="gallery")return lang==="ro"?item.name_ro:item.name_en;if(tab==="links")return item.name;return lang==="ro"?item.title_ro:item.title_en;};
 
   if(tab==="members"&&certMember){
     const memberCerts=certificates.filter(c=>c.member_id===certMember.id);
@@ -1707,6 +1797,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
                 {(tab==="news"||tab==="research"||tab==="education")&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.date}</div>}
                 {tab==="events"&&<div style={{display:"flex",alignItems:"center",gap:8,marginTop:4}}><span style={{background:item.status==="ongoing"?"#fff8e1":item.status==="past"?"#f0f0f0":GREEN_LIGHT_A,color:item.status==="ongoing"?"#f59e0b":item.status==="past"?"#666":GREEN_A,border:"1px solid",borderColor:item.status==="ongoing"?"#fcd34d":item.status==="past"?"#ccc":GREEN_ACCENT,borderRadius:20,padding:"2px 10px",fontSize:11,fontWeight:700}}>{item.status}</span><span style={{fontSize:12,color:"#888"}}>{item.date}</span></div>}
                 {tab==="gallery"&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{item.photos?.length||0} foto · #{item.sort_order||idx+1}</div>}
+                {tab==="links"&&<div style={{fontSize:12,color:"#888",marginTop:3}}>{lang==="ro"?item.category_ro:item.category_en} · <a href={item.url} target="_blank" rel="noreferrer" style={{color:GREEN_A}}>{item.url.replace("https://","").split("/")[0]}</a></div>}
               </div>
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -1724,14 +1815,68 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
 }
 
 
+
+// ─── USEFUL LINKS PAGE ────────────────────────────────────────────────────────
+function LinksPage({usefulLinks=[]}) {
+  const {lang} = useLang();
+  const t = T[lang].links;
+
+  // Group links by category
+  const categories = usefulLinks.reduce((acc, link) => {
+    const cat = lang==="ro" ? link.category_ro : link.category_en;
+    if(!acc[cat]) acc[cat] = [];
+    acc[cat].push(link);
+    return acc;
+  }, {});
+
+  const renderItems = Object.entries(categories).map(([label, items]) => ({
+    label,
+    items: items.map(i => ({name:i.name, url:i.url, desc:lang==="ro"?i.description_ro:i.description_en}))
+  }));
+
+  return (
+    <div>
+      <PageHero title={t.title} subtitle={t.subtitle}/>
+      <section style={{background:"#f8f9fa",padding:"clamp(40px,6vw,80px) clamp(16px,4vw,32px)"}}>
+        <div style={{maxWidth:1000,margin:"0 auto",display:"flex",flexDirection:"column",gap:48}}>
+          {renderItems.map(cat=>(
+            <div key={cat.label}>
+              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:24}}>
+                <div style={{width:4,height:28,background:GREEN,borderRadius:2}}/>
+                <h2 style={{fontFamily:"Georgia,serif",fontSize:22,color:"#1a1a1a",margin:0}}>{cat.label}</h2>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:16}}>
+                {cat.items.map(item=>(
+                  <a key={item.name} href={item.url} target="_blank" rel="noreferrer"
+                    style={{display:"block",background:"white",borderRadius:16,padding:24,textDecoration:"none",boxShadow:"0 4px 20px rgba(0,0,0,0.06)",border:"1px solid #eee",transition:"all 0.25s"}}
+                    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 40px rgba(0,0,0,0.1)";e.currentTarget.style.borderColor=GREEN;}}
+                    onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 4px 20px rgba(0,0,0,0.06)";e.currentTarget.style.borderColor="#eee";}}
+                  >
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+                      <h3 style={{fontFamily:"Georgia,serif",fontSize:15,color:"#1a1a1a",margin:0,lineHeight:1.3,flex:1,paddingRight:12}}>{item.name}</h3>
+                      <span style={{color:GREEN,fontSize:16,flexShrink:0}}>↗</span>
+                    </div>
+                    <p style={{fontSize:13,color:"#888",lineHeight:1.6,margin:0}}>{item.desc}</p>
+                    <div style={{marginTop:12,fontSize:11,color:GREEN,fontWeight:600,letterSpacing:0.5}}>{item.url.replace("https://","").split("/")[0]}</div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 // ─── CONTACT PAGE ─────────────────────────────────────────────────────────────
 function ContactPage() {
   const {lang} = useLang();
   const t = T[lang].contact;
 
   const contactItems = [
-    { icon:"✉", label:t.email, value:t.emailVal, href:`mailto:${t.emailVal}`, color:GREEN },
-    { icon:"📞", label:t.phone, value:t.phoneVal, href:`tel:${t.phoneVal.replace(/\s/g,"")}`, color:GREEN },
+    { icon:"✉", label:t.email, value:t.emailVal, href:null },
+    { icon:"📞", label:t.phone, value:t.phoneVal, href:null },
   ];
 
   return (
@@ -1748,16 +1893,13 @@ function ContactPage() {
               <p style={{color:"#666", fontSize:15, lineHeight:1.8, margin:"0 0 32px"}}>{t.writeUsDesc}</p>
               <div style={{display:"flex", flexDirection:"column", gap:16}}>
                 {contactItems.map(item => (
-                  <a key={item.label} href={item.href} style={{display:"flex", alignItems:"center", gap:16, padding:"16px 20px", background:"#f8f9fa", borderRadius:12, textDecoration:"none", border:`1px solid #eee`, transition:"all 0.2s"}}
-                    onMouseEnter={e=>{e.currentTarget.style.background=GREEN_LIGHT;e.currentTarget.style.borderColor=GREEN;}}
-                    onMouseLeave={e=>{e.currentTarget.style.background="#f8f9fa";e.currentTarget.style.borderColor="#eee";}}
-                  >
+                  <div key={item.label} style={{display:"flex", alignItems:"center", gap:16, padding:"16px 20px", background:"#f8f9fa", borderRadius:12, border:"1px solid #eee"}}>
                     <div style={{width:44, height:44, borderRadius:"50%", background:GREEN_LIGHT, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0}}>{item.icon}</div>
                     <div>
                       <div style={{fontSize:12, color:"#999", marginBottom:2, fontWeight:600, letterSpacing:0.5, textTransform:"uppercase"}}>{item.label}</div>
                       <div style={{fontSize:15, color:"#1a1a1a", fontWeight:700}}>{item.value}</div>
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1780,6 +1922,22 @@ function ContactPage() {
                   <div>
                     <div style={{fontSize:12, color:"#3b5998", marginBottom:2, fontWeight:700, letterSpacing:0.5}}>FACEBOOK</div>
                     <div style={{fontSize:14, color:"#1a1a1a", fontWeight:600, lineHeight:1.3}}>{t.facebookLabel}</div>
+                  </div>
+                </a>
+                <a href="https://www.linkedin.com/company/alian%C8%9Ba-de-boli-hepatice-rare-din-moldova" target="_blank" rel="noreferrer"
+                  style={{display:"flex", alignItems:"center", gap:16, padding:"20px", background:"#f0f7ff", borderRadius:12, textDecoration:"none", border:"1px solid #c8ddf5", transition:"all 0.2s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.background="#deeeff";e.currentTarget.style.borderColor="#0077b5";}}
+                  onMouseLeave={e=>{e.currentTarget.style.background="#f0f7ff";e.currentTarget.style.borderColor="#c8ddf5";}}
+                >
+                  <div style={{width:48, height:48, borderRadius:10, background:"#0077b5", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0}}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                      <circle cx="4" cy="4" r="2"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{fontSize:12, color:"#0077b5", marginBottom:2, fontWeight:700, letterSpacing:0.5}}>LINKEDIN</div>
+                    <div style={{fontSize:14, color:"#1a1a1a", fontWeight:600, lineHeight:1.3}}>{lang==="ro"?"Alianța pentru Boli Hepatice Rare din Moldova":"Alliance for Rare Hepatic Diseases from Moldova"}</div>
                   </div>
                 </a>
               </div>
@@ -1834,6 +1992,7 @@ export default function App() {
   const [education,setEducation] = useState([]);
   const [certificates,setCertificates] = useState([]);
   const [loading,setLoading] = useState(true);
+  const [usefulLinks,setUsefulLinks] = useState([]);
   const [selectedNews,setSelectedNews] = useState(null);
   const [selectedEvent,setSelectedEvent] = useState(null);
   const [selectedArticle,setSelectedArticle] = useState(null);
@@ -1842,9 +2001,9 @@ export default function App() {
   useEffect(()=>{
     const load=async()=>{
       setLoading(true);
-      const[nd,ed,ad,md,pd,rd,edd,cd]=await Promise.all([db.get("news"),db.get("events"),db.get("albums","&order=sort_order.asc"),db.get("members"),db.get("photos"),db.get("research"),db.get("education"),db.get("certificates")]);
+      const[nd,ed,ad,md,pd,rd,edd,cd,ld]=await Promise.all([db.get("news"),db.get("events"),db.get("albums","&order=sort_order.asc"),db.get("members"),db.get("photos"),db.get("research"),db.get("education"),db.get("certificates"),db.get("useful_links","&order=sort_order.asc")]);
       const aw=(ad||[]).map(a=>({...a,photos:(pd||[]).filter(p=>p.album_id===a.id)}));
-      setNews(nd||[]);setEvents(ed||[]);setAlbums(aw);setMembers(md||[]);setResearch(rd||[]);setEducation(edd||[]);setCertificates(cd||[]);setLoading(false);
+      setNews(nd||[]);setEvents(ed||[]);setAlbums(aw);setMembers(md||[]);setResearch(rd||[]);setEducation(edd||[]);setCertificates(cd||[]);setUsefulLinks(ld||[]);setLoading(false);
     };
     load();
   },[]);
@@ -1852,6 +2011,13 @@ export default function App() {
   const [accessToken, setAccessToken] = useState(()=>sessionStorage.getItem("abhr_token")||null);
 
   const login=async(cardNumber,password)=>{
+    // Demo admin fallback for preview/offline mode
+    if(cardNumber==="ADMIN-000"&&password==="admin123") {
+      const u={email:"ADMIN-000",name:"Administrator",isAdmin:true};
+      setUser(u);
+      sessionStorage.setItem("abhr_user",JSON.stringify(u));
+      return u;
+    }
     // Admin login via email
     if(cardNumber.includes("@")) {
       const result = await auth.signIn(cardNumber, password);
@@ -1864,12 +2030,14 @@ export default function App() {
         // Reload protected data with admin token
         try {
           const adminDb = makeDb(result.access_token);
-          const [freshMembers, freshCerts] = await Promise.all([
+          const [freshMembers, freshCerts, freshLinks] = await Promise.all([
             adminDb.get("members"),
             adminDb.get("certificates"),
+            adminDb.get("useful_links","&order=sort_order.asc"),
           ]);
           if(freshMembers?.length >= 0) setMembers(freshMembers);
           if(freshCerts?.length >= 0) setCertificates(freshCerts);
+          if(freshLinks?.length >= 0) setUsefulLinks(freshLinks);
         } catch(e) { console.error("Failed to reload protected data:", e); }
         return u;
       }
@@ -2062,10 +2230,11 @@ export default function App() {
             {cp==="researchDetail"&&<ArticleDetailPage item={selectedArticle} type="research" setPage={setPage}/>}
             {cp==="education"&&<ArticleListPage items={education} type="education" setSelectedArticle={setSelectedArticle} setPage={setPage}/>}
             {cp==="contact"&&<ContactPage/>}
+            {cp==="links"&&<LinksPage usefulLinks={usefulLinks}/>}
             {cp==="educationDetail"&&<ArticleDetailPage item={selectedArticle} type="education" setPage={setPage}/>}
             {cp==="profile"&&<ProfilePage certificates={certificates} events={events} accessToken={accessToken}/>}
             {cp==="login"&&<LoginPage setPage={setPage}/>}
-            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} authedDb={authedDb} authedStorage={makeStorage(accessToken)} accessToken={accessToken}/>}
+            {cp==="admin"&&<AdminPage members={members} setMembers={setMembers} news={news} setNews={setNews} events={events} setEvents={setEvents} albums={albums} setAlbums={setAlbums} research={research} setResearch={setResearch} education={education} setEducation={setEducation} certificates={certificates} setCertificates={setCertificates} usefulLinks={usefulLinks} setUsefulLinks={setUsefulLinks} authedDb={authedDb} authedStorage={makeStorage(accessToken)} accessToken={accessToken}/>}
           </div>
           {showFooter&&<Footer setPage={setPage}/>}
         </div>
