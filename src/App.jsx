@@ -327,7 +327,7 @@ const T = {
       followUs:"Urmăriți-ne",
     },
     loading:"Se încarcă...",
-    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",banner_image_url:"URL Imagine Banner (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment",name:"Nume",url:"URL",category_ro:"Categorie (RO)",category_en:"Categorie (EN)",description_ro:"Descriere (RO)",description_en:"Descriere (EN)"}},
+    admin:{title:"Panou Administrare",tabs:{members:"Membri",news:"Știri",events:"Evenimente",gallery:"Galerie",research:"Cercetare",education:"Educație"},addMember:"Adaugă Membru",addNews:"Adaugă Știre",addEvent:"Adaugă Eveniment",addAlbum:"Adaugă Album",addPost:"Adaugă Articol",save:"Salvează",cancel:"Anulează",delete:"Șterge",edit:"Editează",managePhotos:"Fotografii",manageCerts:"Certificate",addCert:"Adaugă Certificat",fields:{name:"Nume",card_number:"Număr Card",email:"Email",join_date:"Data Înscrierii",password:"Parolă",title_ro:"Titlu (RO) *",title_en:"Titlu (EN) *",body_ro:"Conținut (RO)",body_en:"Conținut (EN)",image_url:"URL Imagine",date:"Data",location_ro:"Locație (RO)",location_en:"Locație (EN)",desc_ro:"Descriere (RO)",desc_en:"Descriere (EN)",status:"Status *",agenda_url:"URL Agendă PDF (opțional)",ticket_url:"URL Cumpărare Bilete (opțional)",banner_image_url:"URL Imagine Banner (opțional)",speakers_image_url:"URL Imagine Vorbitori (opțional)",album_id:"ID Album Galerie (opțional)",albumNameRo:"Nume Album (RO)",albumNameEn:"Nume Album (EN)",coverUrl:"URL Copertă",photoUrl:"URL Fotografie",captionRo:"Legendă (RO)",captionEn:"Legendă (EN)",cert_image_url:"URL Certificat",event_id:"Eveniment",name:"Nume",url:"URL",category_ro:"Categorie (RO)",category_en:"Categorie (EN)",description_ro:"Descriere (RO)",description_en:"Descriere (EN)"}},
   },
   en:{
     orgName:"Alliance for Rare Hepatic Diseases",
@@ -415,7 +415,7 @@ const T = {
       followUs:"Follow us",
     },
     loading:"Loading...",
-    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",banner_image_url:"Banner Image URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event",name:"Name",url:"URL",category_ro:"Category (RO)",category_en:"Category (EN)",description_ro:"Description (RO)",description_en:"Description (EN)"}},
+    admin:{title:"Admin Panel",tabs:{members:"Members",news:"News",events:"Events",gallery:"Gallery",research:"Research",education:"Education"},addMember:"Add Member",addNews:"Add News",addEvent:"Add Event",addAlbum:"Add Album",addPost:"Add Article",save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",managePhotos:"Photos",manageCerts:"Certificates",addCert:"Add Certificate",fields:{name:"Name",card_number:"Card Number",email:"Email",join_date:"Join Date",password:"Password",title_ro:"Title (RO) *",title_en:"Title (EN) *",body_ro:"Content (RO)",body_en:"Content (EN)",image_url:"Image URL",date:"Date",location_ro:"Location (RO)",location_en:"Location (EN)",desc_ro:"Description (RO)",desc_en:"Description (EN)",status:"Status *",agenda_url:"Agenda PDF URL (optional)",ticket_url:"Ticket Purchase URL (optional)",banner_image_url:"Banner Image URL (optional)",speakers_image_url:"Speakers Image URL (optional)",album_id:"Gallery Album ID (optional)",albumNameRo:"Album Name (RO)",albumNameEn:"Album Name (EN)",coverUrl:"Cover URL",photoUrl:"Photo URL",captionRo:"Caption (RO)",captionEn:"Caption (EN)",cert_image_url:"Certificate Image URL",event_id:"Event",name:"Name",url:"URL",category_ro:"Category (RO)",category_en:"Category (EN)",description_ro:"Description (RO)",description_en:"Description (EN)"}},
   }
 };
 
@@ -1100,10 +1100,19 @@ function EventDetailPage({item,setPage,albums,setSelectedGalleryAlbum}) {
             <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(24px,4vw,44px)",color:"white",margin:0,lineHeight:1.2}}>{title}</h1>
             <StatusBadge status={item.status}/>
           </div>
-          <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
+          <div style={{display:"flex",gap:24,flexWrap:"wrap",alignItems:"center"}}>
             <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📅 {item.date}</span>
             <span style={{color:"rgba(255,255,255,0.75)",fontSize:14}}>📍 {location}</span>
           </div>
+          {item.ticket_url&&(item.status==="upcoming"||item.status==="ongoing")&&(
+            <div style={{marginTop:24}}>
+              <a href={item.ticket_url} target="_blank" rel="noreferrer"
+                style={{display:"inline-flex",alignItems:"center",gap:10,background:GREEN_ACCENT,color:"white",padding:"14px 32px",borderRadius:50,fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 20px rgba(46,204,138,0.45)",transition:"all 0.2s",letterSpacing:0.3}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 28px rgba(46,204,138,0.6)";}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 4px 20px rgba(46,204,138,0.45)";}}
+              >🎟 {lang==="ro"?"Cumpără Bilet":"Buy Ticket"}</a>
+            </div>
+          )}
         </div>
         <div style={{position:"absolute",bottom:-2,left:0,right:0}}>
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{display:"block",width:"100%",height:60}}><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f8f9fa"/></svg>
@@ -1527,7 +1536,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
       return{card_number:form.card_number,name:form.name,email:form.email,join_date:form.join_date||null,password_hash,auth_id:form.auth_id||null};
     }
     if(tab==="news"||tab==="research"||tab==="education")return{title_ro:form.title_ro,title_en:form.title_en,body_ro:form.body_ro,body_en:form.body_en,image_url:form.image_url||null,date:form.date||new Date().toISOString().slice(0,10)};
-    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",banner_image_url:form.banner_image_url||null,agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
+    if(tab==="events")return{title_ro:form.title_ro,title_en:form.title_en,date:form.date,location_ro:form.location_ro,location_en:form.location_en,desc_ro:form.desc_ro,desc_en:form.desc_en,status:form.status||"upcoming",ticket_url:form.ticket_url||null,banner_image_url:form.banner_image_url||null,agenda_url:form.agenda_url||null,speakers_image_url:form.speakers_image_url||null,album_id:form.album_id||null};
     if(tab==="links")return{name:form.name,url:form.url,category_ro:form.category_ro,category_en:form.category_en,description_ro:form.description_ro||"",description_en:form.description_en||""};
     return{name_ro:form.albumNameRo||"",name_en:form.albumNameEn||"",cover_url:form.coverUrl||null};
   };
@@ -1646,7 +1655,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
   const handleDeleteCert=async(id)=>{await adb.delete("certificates",id);setCertificates(cs=>cs.filter(c=>c.id!==id));};
   const downloadCert=(cert)=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{const c=document.createElement("canvas");c.width=img.width;c.height=img.height;c.getContext("2d").drawImage(img,0,0);const a=document.createElement("a");a.download=`cert-${cert.member_id}.png`;a.href=c.toDataURL("image/png");a.click();};img.src=cert.image_url;};
 
-  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"],links:["name","url","category_ro","category_en","description_ro","description_en"]};
+  const FIELDS={members:["name","card_number","email","join_date","password"],news:["title_ro","title_en","body_ro","body_en","image_url","date"],events:["title_ro","title_en","date","location_ro","location_en","desc_ro","desc_en","status","ticket_url","banner_image_url","agenda_url","speakers_image_url","album_id"],gallery:["albumNameRo","albumNameEn","coverUrl"],research:["title_ro","title_en","body_ro","body_en","image_url","date"],education:["title_ro","title_en","body_ro","body_en","image_url","date"],links:["name","url","category_ro","category_en","description_ro","description_en"]};
   const fieldLabel=(f)=>t.fields[f]||f;
   const[currentData]=getData();
   const currentFields=FIELDS[tab]||[];
@@ -1779,7 +1788,7 @@ function AdminPage({members,setMembers,news,setNews,events,setEvents,albums,setA
             {currentFields.map(f=>{
               const isImageField = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="cert_image_url";
               const isPdfField = f==="agenda_url";
-              const isOptional = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
+              const isOptional = f==="image_url"||f==="speakers_image_url"||f==="banner_image_url"||f==="coverUrl"||f==="agenda_url"||f==="album_id"||f==="ticket_url"||f==="location_ro"||f==="location_en"||f==="desc_ro"||f==="desc_en"||f==="body_ro"||f==="body_en"||f==="email"||f==="join_date";
               if(isImageField) return(
                 <FileUploadField key={f} label={fieldLabel(f)} value={form[f]||""} onChange={v=>setForm(p=>({...p,[f]:v}))} accept="image/*" bucket="images" optional={isOptional} storageInstance={ast}/>
               );
